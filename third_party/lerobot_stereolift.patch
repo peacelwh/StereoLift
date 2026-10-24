@@ -1,0 +1,690 @@
+diff --git a/src/lerobot/configs/default.py b/src/lerobot/configs/default.py
+index 38991a66..159d2298 100644
+--- a/src/lerobot/configs/default.py
++++ b/src/lerobot/configs/default.py
+@@ -46,6 +46,16 @@ class DatasetConfig:
+     streaming: bool = False
+     # Fraction of episodes held out per task for offline evaluation (0.0 = disabled).
+     eval_split: float = 0.0
++    # Optional manifest describing groups of episodes that should be sampled as separate tasks.
++    # RoboCasa365's Human300 protocol uses this to reproduce its hierarchical task/trajectory/frame
++    # sampling from a single merged LeRobot dataset. Relative paths are resolved below ``root``.
++    task_sampling_manifest: str | None = None
++    task_sampling_power: float = 0.4
++    # Optional JSON {"<manifest group index>": weight multiplier} applied on top of frames**power.
++    task_sampling_weights: str | None = None
++    # Optional normalization statistics JSON. Relative paths are resolved below ``root``. This lets
++    # merged datasets use task-balanced statistics without replacing their canonical meta/stats.json.
++    stats_override_path: str | None = None
+ 
+     def __post_init__(self) -> None:
+         if self.depth_output_unit not in (DEPTH_METER_UNIT, DEPTH_MILLIMETER_UNIT):
+@@ -54,6 +64,10 @@ class DatasetConfig:
+             )
+         if not (0.0 <= self.eval_split < 1.0):
+             raise ValueError(f"eval_split must be in [0.0, 1.0), got {self.eval_split}")
++        if self.task_sampling_power < 0.0:
++            raise ValueError(f"task_sampling_power must be non-negative, got {self.task_sampling_power}")
++        if self.streaming and self.task_sampling_manifest is not None:
++            raise ValueError("task_sampling_manifest is only supported for non-streaming datasets")
+         if self.episodes is not None:
+             if any(ep < 0 for ep in self.episodes):
+                 raise ValueError(
+diff --git a/src/lerobot/configs/train.py b/src/lerobot/configs/train.py
+index e3d35469..d60aa0a5 100644
+--- a/src/lerobot/configs/train.py
++++ b/src/lerobot/configs/train.py
+@@ -132,6 +132,9 @@ class TrainPipelineConfig(HubMixin):
+ 
+     # Rename map for the observation to override the image and state keys
+     rename_map: dict[str, str] = field(default_factory=dict)
++    # Optional whitelist of image/video observation keys to use for training.
++    # When empty, all visual observations declared by the dataset are used.
++    selected_image_features: list[str] = field(default_factory=list)
+     checkpoint_path: Path | None = field(init=False, default=None)
+ 
+     @property
+diff --git a/src/lerobot/datasets/__init__.py b/src/lerobot/datasets/__init__.py
+index 7715a115..0acee70c 100644
+--- a/src/lerobot/datasets/__init__.py
++++ b/src/lerobot/datasets/__init__.py
+@@ -50,7 +50,7 @@ from .lerobot_dataset import LeRobotDataset
+ from .multi_dataset import MultiLeRobotDataset
+ from .pipeline_features import aggregate_pipeline_dataset_features, create_initial_features
+ from .pyav_utils import check_video_encoder_parameters_pyav, detect_available_encoders_pyav
+-from .sampler import EpisodeAwareSampler, compute_sampler_state
++from .sampler import EpisodeAwareSampler, TaskBalancedSampler, compute_sampler_state, load_episode_groups
+ from .streaming_dataset import StreamingLeRobotDataset
+ from .utils import DEFAULT_EPISODES_PATH, create_lerobot_dataset_card
+ from .video_utils import VideoEncodingManager
+@@ -73,6 +73,7 @@ __all__ = [
+     "PERSISTENT_STYLES",
+     "STYLE_REGISTRY",
+     "StreamingLeRobotDataset",
++    "TaskBalancedSampler",
+     "VideoEncodingManager",
+     "check_video_encoder_parameters_pyav",
+     "detect_available_encoders_pyav",
+@@ -88,6 +89,7 @@ __all__ = [
+     "delete_episodes",
+     "get_feature_stats",
+     "load_episodes",
++    "load_episode_groups",
+     "make_dataset",
+     "make_train_eval_datasets",
+     "merge_datasets",
+diff --git a/src/lerobot/datasets/factory.py b/src/lerobot/datasets/factory.py
+index da7b4365..a068982b 100644
+--- a/src/lerobot/datasets/factory.py
++++ b/src/lerobot/datasets/factory.py
+@@ -13,8 +13,10 @@
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
++import json
+ import logging
+ import math
++from pathlib import Path
+ from pprint import pformat
+ 
+ import torch
+@@ -26,11 +28,24 @@ from lerobot.transforms import ImageTransforms
+ from lerobot.utils.constants import ACTION, IMAGENET_STATS, OBS_PREFIX, REWARD
+ 
+ from .dataset_metadata import LeRobotDatasetMetadata
++from .io_utils import cast_stats_to_numpy
+ from .lerobot_dataset import LeRobotDataset
+ from .multi_dataset import MultiLeRobotDataset
+ from .streaming_dataset import StreamingLeRobotDataset
+ 
+ 
++def _apply_stats_override(dataset: LeRobotDataset, stats_path: str | None) -> None:
++    if stats_path is None:
++        return
++    path = Path(stats_path)
++    if not path.is_absolute():
++        path = dataset.meta.root / path
++    if not path.is_file():
++        raise FileNotFoundError(f"Dataset stats override does not exist: {path}")
++    dataset.meta.stats = cast_stats_to_numpy(json.loads(path.read_text()))
++    logging.info("Using dataset normalization statistics override: %s", path)
++
++
+ def resolve_delta_timestamps(
+     cfg: PreTrainedConfig | RewardModelConfig, ds_meta: LeRobotDatasetMetadata
+ ) -> dict[str, list] | None:
+@@ -99,6 +114,7 @@ def make_dataset(cfg: TrainPipelineConfig) -> LeRobotDataset | MultiLeRobotDatas
+                 return_uint8=True,
+                 depth_output_unit=cfg.dataset.depth_output_unit,
+                 tolerance_s=cfg.tolerance_s,
++                selected_image_features=cfg.selected_image_features,
+             )
+         else:
+             dataset = StreamingLeRobotDataset(
+@@ -126,6 +142,8 @@ def make_dataset(cfg: TrainPipelineConfig) -> LeRobotDataset | MultiLeRobotDatas
+             f"{pformat(dataset.repo_id_to_index, indent=2)}"
+         )
+ 
++    _apply_stats_override(dataset, cfg.dataset.stats_override_path)
++
+     if cfg.dataset.use_imagenet_stats:
+         for key in dataset.meta.camera_keys:
+             if key in dataset.meta.depth_keys:
+@@ -191,6 +209,7 @@ def make_train_eval_datasets(
+         video_backend=cfg.dataset.video_backend,
+         return_uint8=True,
+         tolerance_s=cfg.tolerance_s,
++        selected_image_features=cfg.selected_image_features,
+     )
+ 
+     eval_dataset = LeRobotDataset(
+@@ -203,8 +222,12 @@ def make_train_eval_datasets(
+         video_backend=cfg.dataset.video_backend,
+         return_uint8=True,
+         tolerance_s=cfg.tolerance_s,
++        selected_image_features=cfg.selected_image_features,
+     )
+ 
++    _apply_stats_override(train_dataset, cfg.dataset.stats_override_path)
++    _apply_stats_override(eval_dataset, cfg.dataset.stats_override_path)
++
+     if cfg.dataset.use_imagenet_stats:
+         for ds in (train_dataset, eval_dataset):
+             for key in ds.meta.camera_keys:
+diff --git a/src/lerobot/datasets/lerobot_dataset.py b/src/lerobot/datasets/lerobot_dataset.py
+index aba86efe..cfb538bc 100644
+--- a/src/lerobot/datasets/lerobot_dataset.py
++++ b/src/lerobot/datasets/lerobot_dataset.py
+@@ -65,6 +65,7 @@ class LeRobotDataset(torch.utils.data.Dataset):
+         encoder_threads: int | None = None,
+         streaming_encoding: bool = False,
+         encoder_queue_maxsize: int = 30,
++        selected_image_features: list[str] | None = None,
+     ):
+         """
+         2 modes are available for instantiating this class, depending on 2 different use cases:
+@@ -197,6 +198,9 @@ class LeRobotDataset(torch.utils.data.Dataset):
+                 instead of writing PNG images first. This makes save_episode() near-instant. Defaults to False.
+             encoder_queue_maxsize (int, optional): Maximum number of frames to buffer per camera when using
+                 streaming encoding. Defaults to 30 (~1s at 30fps).
++            selected_image_features (list[str] | None, optional): Restrict an existing dataset to these
++                image/video feature keys before checking the local cache. This allows a local mirror to omit
++                unselected camera videos. Defaults to None (all declared cameras).
+ 
+         Note:
+             Write-mode parameters (``streaming_encoding``, ``batch_encoding_size``) passed to
+@@ -225,6 +229,28 @@ class LeRobotDataset(torch.utils.data.Dataset):
+         self.root = self.meta.root
+         self.revision = self.meta.revision
+         self.meta.rescale_depth_stats(self._depth_output_unit)
++        if selected_image_features is not None:
++            selected = set(selected_image_features)
++            if len(selected) != len(selected_image_features):
++                raise ValueError("selected_image_features contains duplicate keys")
++            available = set(self.meta.camera_keys)
++            missing = selected - available
++            if missing:
++                raise ValueError(
++                    f"selected_image_features contains keys not present in the dataset: {sorted(missing)}. "
++                    f"Available image features are: {sorted(available)}"
++                )
++            self.meta.info.features = {
++                key: value
++                for key, value in self.meta.info.features.items()
++                if key not in available or key in selected
++            }
++            if self.meta.stats is not None:
++                self.meta.stats = {
++                    key: value
++                    for key, value in self.meta.stats.items()
++                    if key not in available or key in selected
++                }
+ 
+         if episodes is not None and any(
+             episode >= self.meta.total_episodes or episode < 0 for episode in episodes
+diff --git a/src/lerobot/datasets/sampler.py b/src/lerobot/datasets/sampler.py
+index aee6ce46..3a059f62 100644
+--- a/src/lerobot/datasets/sampler.py
++++ b/src/lerobot/datasets/sampler.py
+@@ -16,6 +16,8 @@
+ import logging
+ import math
+ from collections.abc import Iterator
++from pathlib import Path
++from typing import Sequence
+ 
+ import numpy as np
+ import torch
+@@ -159,6 +161,238 @@ class EpisodeAwareSampler:
+         return self._num_frames
+ 
+ 
++def load_episode_groups(manifest_path: str | Path) -> list[list[int]]:
++    """Load contiguous episode groups from a RoboCasa365-style parquet manifest.
++
++    The merged Human300 dataset records each original source task with an inclusive
++    ``output_episode_from`` and exclusive ``output_episode_to`` boundary. Keeping
++    this loader here makes the sampler independent of RoboCasa itself.
++    """
++    import pyarrow.parquet as pq
++
++    path = Path(manifest_path)
++    if not path.is_file():
++        raise FileNotFoundError(f"Task sampling manifest does not exist: {path}")
++    table = pq.read_table(path, columns=["output_episode_from", "output_episode_to"])
++    starts = table["output_episode_from"].to_numpy(zero_copy_only=False)
++    ends = table["output_episode_to"].to_numpy(zero_copy_only=False)
++    if len(starts) == 0:
++        raise ValueError(f"Task sampling manifest contains no rows: {path}")
++
++    groups: list[list[int]] = []
++    previous_end: int | None = None
++    for row, (start_value, end_value) in enumerate(zip(starts, ends, strict=True)):
++        start, end = int(start_value), int(end_value)
++        if start < 0 or end <= start:
++            raise ValueError(f"Invalid episode range in {path} row {row}: [{start}, {end})")
++        if previous_end is not None and start < previous_end:
++            raise ValueError(
++                f"Overlapping or unsorted episode ranges in {path}: row {row} starts at {start}, "
++                f"before the previous end {previous_end}"
++            )
++        groups.append(list(range(start, end)))
++        previous_end = end
++    return groups
++
++
++class TaskBalancedSampler:
++    """Hierarchical sampler for merged multi-task trajectory datasets.
++
++    Every sample independently chooses a task with probability proportional to
++    ``valid_task_frames**task_sampling_power``, then chooses a trajectory uniformly
++    inside that task, and finally a frame uniformly inside that trajectory. This is
++    the sampling protocol used by RoboCasa365's official Human300 OpenPI loader.
++
++    Samples are generated by a stateless counter hash, so the sequence is a pure
++    function of ``(seed, epoch, position)``. All distributed ranks regenerate the
++    same global sequence for Accelerate to shard, while resuming at a saved position
++    does not require replaying earlier samples.
++    """
++
++    _MASK64 = (1 << 64) - 1
++    _STREAM_GROUP = np.uint64(0xA0761D6478BD642F)
++    _STREAM_EPISODE = np.uint64(0xE7037ED1A0B428DB)
++    _STREAM_FRAME = np.uint64(0x8EBC6AF09C88C6E3)
++
++    def __init__(
++        self,
++        dataset_from_indices: Sequence[int],
++        dataset_to_indices: Sequence[int],
++        episode_groups: Sequence[Sequence[int]],
++        episode_indices_to_use: Sequence[int] | None = None,
++        drop_n_first_frames: int = 0,
++        drop_n_last_frames: int = 0,
++        task_sampling_power: float = 0.4,
++        seed: int = 0,
++        group_weights: Sequence[float] | None = None,
++        num_samples: int | None = None,
++        absolute_to_relative_idx: dict[int, int] | None = None,
++    ):
++        if drop_n_first_frames < 0:
++            raise ValueError(f"drop_n_first_frames must be >= 0, got {drop_n_first_frames}")
++        if drop_n_last_frames < 0:
++            raise ValueError(f"drop_n_last_frames must be >= 0, got {drop_n_last_frames}")
++        if task_sampling_power < 0:
++            raise ValueError(f"task_sampling_power must be non-negative, got {task_sampling_power}")
++
++        from_indices = np.asarray(dataset_from_indices, dtype=np.int64)
++        to_indices = np.asarray(dataset_to_indices, dtype=np.int64)
++        if from_indices.shape != to_indices.shape:
++            raise ValueError(
++                "dataset_from_indices and dataset_to_indices must have the same length, "
++                f"got {len(from_indices)} and {len(to_indices)}"
++            )
++        if len(from_indices) == 0:
++            raise ValueError("Cannot construct a TaskBalancedSampler for an empty dataset")
++
++        valid_episodes = (
++            set(range(len(from_indices)))
++            if episode_indices_to_use is None
++            else {int(index) for index in episode_indices_to_use}
++        )
++        if any(index < 0 or index >= len(from_indices) for index in valid_episodes):
++            raise ValueError("episode_indices_to_use contains an out-of-range episode index")
++
++        covered: set[int] = set()
++        group_starts: list[np.ndarray] = []
++        group_lengths: list[np.ndarray] = []
++        group_frame_counts: list[int] = []
++        kept_groups: list[int] = []
++        for group_index, group in enumerate(episode_groups):
++            group_episode_indices = [int(index) for index in group if int(index) in valid_episodes]
++            if len(group_episode_indices) != len(set(group_episode_indices)):
++                raise ValueError(f"Episode group {group_index} contains duplicate episode indices")
++            overlap = covered.intersection(group_episode_indices)
++            if overlap:
++                raise ValueError(
++                    f"Episode groups overlap; group {group_index} repeats episode(s) {sorted(overlap)[:5]}"
++                )
++            covered.update(group_episode_indices)
++
++            starts, lengths = [], []
++            for episode_index in group_episode_indices:
++                if episode_index < 0 or episode_index >= len(from_indices):
++                    raise ValueError(
++                        f"Episode group {group_index} contains out-of-range index {episode_index}"
++                    )
++                start = int(from_indices[episode_index]) + drop_n_first_frames
++                length = int(to_indices[episode_index]) - drop_n_last_frames - start
++                if length <= 0:
++                    logger.warning(
++                        "Episode %d has no valid frames after dropping %d first and %d last frames; skipping.",
++                        episode_index,
++                        drop_n_first_frames,
++                        drop_n_last_frames,
++                    )
++                    continue
++                starts.append(start)
++                lengths.append(length)
++
++            if starts:
++                starts_array = np.asarray(starts, dtype=np.int64)
++                lengths_array = np.asarray(lengths, dtype=np.int64)
++                group_starts.append(starts_array)
++                group_lengths.append(lengths_array)
++                group_frame_counts.append(int(lengths_array.sum()))
++                kept_groups.append(group_index)
++
++        uncovered = valid_episodes - covered
++        if uncovered:
++            raise ValueError(
++                "Task sampling manifest does not cover all selected episodes; first missing episode(s): "
++                f"{sorted(uncovered)[:5]}"
++            )
++        if not group_starts:
++            raise ValueError("No valid task groups remain after episode filtering")
++
++        frame_counts = np.asarray(group_frame_counts, dtype=np.float64)
++        weights = np.power(frame_counts, task_sampling_power)
++        if group_weights is not None:
++            if len(group_weights) != len(episode_groups):
++                raise ValueError(f"group_weights has {len(group_weights)} entries for {len(episode_groups)} groups")
++            weights = weights * np.asarray([float(group_weights[g]) for g in kept_groups], dtype=np.float64)
++            if not np.all(weights >= 0) or weights.sum() <= 0:
++                raise ValueError("group_weights must be non-negative with a positive total")
++        self._task_probabilities = weights / weights.sum()
++        self._task_cdf = np.cumsum(self._task_probabilities)
++        self._task_cdf[-1] = 1.0
++        self._group_starts = group_starts
++        self._group_lengths = group_lengths
++        total_valid_frames = int(sum(group_frame_counts))
++        self._num_samples = total_valid_frames if num_samples is None else int(num_samples)
++        if self._num_samples <= 0:
++            raise ValueError(f"num_samples must be positive, got {self._num_samples}")
++        self.seed = int(seed)
++        self._epoch = 0
++        self._start_index = 0
++        self._absolute_to_relative = absolute_to_relative_idx
++        self._chunk_size = 65_536
++
++    @property
++    def task_probabilities(self) -> np.ndarray:
++        return self._task_probabilities.copy()
++
++    def set_epoch(self, epoch: int) -> None:
++        self._epoch = int(epoch)
++
++    def state_dict(self) -> dict:
++        return {"epoch": self._epoch, "start_index": self._start_index}
++
++    def load_state_dict(self, state: dict) -> None:
++        self._epoch = int(state["epoch"])
++        self._start_index = int(state["start_index"])
++
++    @classmethod
++    def _splitmix64(cls, values: np.ndarray) -> np.ndarray:
++        with np.errstate(over="ignore"):
++            values = values + np.uint64(0x9E3779B97F4A7C15)
++            values = (values ^ (values >> np.uint64(30))) * np.uint64(0xBF58476D1CE4E5B9)
++            values = (values ^ (values >> np.uint64(27))) * np.uint64(0x94D049BB133111EB)
++            return values ^ (values >> np.uint64(31))
++
++    def _sample_chunk(self, positions: np.ndarray, epoch: int) -> np.ndarray:
++        seed_value = np.uint64(self.seed & self._MASK64)
++        epoch_value = np.uint64(epoch & self._MASK64)
++        base = positions.astype(np.uint64, copy=False) ^ seed_value ^ self._splitmix64(
++            np.asarray([epoch_value], dtype=np.uint64)
++        )[0]
++        group_random = self._splitmix64(base ^ self._STREAM_GROUP)
++        episode_random = self._splitmix64(base ^ self._STREAM_EPISODE)
++        frame_random = self._splitmix64(base ^ self._STREAM_FRAME)
++
++        unit = (group_random >> np.uint64(11)).astype(np.float64) * (1.0 / (1 << 53))
++        selected_groups = np.searchsorted(self._task_cdf, unit, side="right")
++        result = np.empty(len(positions), dtype=np.int64)
++        for group_index in np.unique(selected_groups):
++            mask = selected_groups == group_index
++            starts = self._group_starts[int(group_index)]
++            lengths = self._group_lengths[int(group_index)]
++            selected_episodes = (episode_random[mask] % np.uint64(len(starts))).astype(np.int64)
++            selected_lengths = lengths[selected_episodes]
++            offsets = (frame_random[mask] % selected_lengths.astype(np.uint64)).astype(np.int64)
++            result[mask] = starts[selected_episodes] + offsets
++        return result
++
++    def __iter__(self) -> Iterator[int]:
++        epoch, start = self._epoch, self._start_index
++        self._epoch += 1
++        self._start_index = 0
++        return self._iter_epoch(epoch, start)
++
++    def _iter_epoch(self, epoch: int, start: int) -> Iterator[int]:
++        for chunk_start in range(start, self._num_samples, self._chunk_size):
++            chunk_end = min(chunk_start + self._chunk_size, self._num_samples)
++            positions = np.arange(chunk_start, chunk_end, dtype=np.uint64)
++            for absolute_index in self._sample_chunk(positions, epoch):
++                index = int(absolute_index)
++                if self._absolute_to_relative is not None:
++                    index = self._absolute_to_relative[index]
++                yield index
++
++    def __len__(self) -> int:
++        return self._num_samples
++
++
+ def compute_sampler_state(step: int, num_frames: int, batch_size: int, num_processes: int) -> dict:
+     """Map an optimization step to an `EpisodeAwareSampler` state for sample-exact resume.
+ 
+diff --git a/src/lerobot/envs/robocasa.py b/src/lerobot/envs/robocasa.py
+index a84a7c76..4aee7221 100644
+--- a/src/lerobot/envs/robocasa.py
++++ b/src/lerobot/envs/robocasa.py
+@@ -224,22 +224,45 @@ class RoboCasaEnv(gym.Env):
+     def _format_raw_obs(self, raw_obs: dict) -> RobotObservation:
+         """Convert RoboCasaGymEnv observation dict to LeRobot format."""
+         # RoboCasaGymEnv emits camera frames under "video.<cam>".
+-        images = {cam: raw_obs[f"video.{cam}"] for cam in self.camera_name if f"video.{cam}" in raw_obs}
++        images: dict[str, np.ndarray] = {}
++        for cam in self.camera_name:
++            raw_key = f"video.{cam}"
++            if raw_key not in raw_obs:
++                raise KeyError(
++                    f"RoboCasa observation is missing requested camera {raw_key!r}; "
++                    f"available keys={sorted(raw_obs)}"
++                )
++            image = np.asarray(raw_obs[raw_key])
++            expected_shape = (self.observation_height, self.observation_width, 3)
++            if image.shape != expected_shape:
++                raise ValueError(f"Camera {raw_key!r} has shape {image.shape}; expected {expected_shape}.")
++            if image.dtype != np.uint8:
++                raise TypeError(f"Camera {raw_key!r} has dtype {image.dtype}; expected uint8.")
++            images[cam] = image
+ 
+         if self.obs_type == "pixels":
+             return {"pixels": images}
+ 
+         # `state.*` keys come from PandaOmronKeyConverter inside the wrapper.
++        state_keys = (
++            "state.base_position",
++            "state.base_rotation",
++            "state.end_effector_position_relative",
++            "state.end_effector_rotation_relative",
++            "state.gripper_qpos",
++        )
++        missing_state = [key for key in state_keys if key not in raw_obs]
++        if missing_state:
++            raise KeyError(
++                f"RoboCasa observation is missing required state keys {missing_state}; "
++                f"available keys={sorted(raw_obs)}"
++            )
+         agent_pos = np.concatenate(
+-            [
+-                raw_obs.get("state.base_position", np.zeros(3)),
+-                raw_obs.get("state.base_rotation", np.zeros(4)),
+-                raw_obs.get("state.end_effector_position_relative", np.zeros(3)),
+-                raw_obs.get("state.end_effector_rotation_relative", np.zeros(4)),
+-                raw_obs.get("state.gripper_qpos", np.zeros(2)),
+-            ],
++            [np.asarray(raw_obs[key]) for key in state_keys],
+             axis=-1,
+         ).astype(np.float32)
++        if agent_pos.shape != (OBS_STATE_DIM,):
++            raise ValueError(f"Flattened RoboCasa state has shape {agent_pos.shape}; expected ({OBS_STATE_DIM},).")
+ 
+         return {"pixels": images, "agent_pos": agent_pos}
+ 
+@@ -284,14 +307,6 @@ class RoboCasaEnv(gym.Env):
+         info.update({"task": self.task, "done": done, "is_success": is_success})
+ 
+         observation = self._format_raw_obs(raw_obs)
+-        if terminated:
+-            info["final_info"] = {
+-                "task": self.task,
+-                "done": bool(done),
+-                "is_success": bool(is_success),
+-            }
+-            self.reset()
+-
+         return observation, reward, terminated, truncated, info
+ 
+     def close(self):
+diff --git a/src/lerobot/scripts/lerobot_train.py b/src/lerobot/scripts/lerobot_train.py
+index 6e845852..7e813697 100644
+--- a/src/lerobot/scripts/lerobot_train.py
++++ b/src/lerobot/scripts/lerobot_train.py
+@@ -23,6 +23,7 @@ import logging
+ import sys
+ import time
+ from contextlib import nullcontext
++from pathlib import Path
+ from pprint import pformat
+ from typing import TYPE_CHECKING, Any
+ 
+@@ -49,7 +50,13 @@ from lerobot.common.train_utils import (
+ from lerobot.common.wandb_utils import WandBLogger
+ from lerobot.configs import JobConfig, parser
+ from lerobot.configs.train import TrainPipelineConfig
+-from lerobot.datasets import EpisodeAwareSampler, compute_sampler_state
++from lerobot.configs.types import FeatureType
++from lerobot.datasets import (
++    EpisodeAwareSampler,
++    TaskBalancedSampler,
++    compute_sampler_state,
++    load_episode_groups,
++)
+ from lerobot.datasets.factory import make_train_eval_datasets
+ from lerobot.envs import close_envs, make_env, make_env_pre_post_processors
+ from lerobot.jobs import submit_to_hf
+@@ -71,6 +78,58 @@ from lerobot.utils.utils import (
+ from .lerobot_eval import eval_policy_all
+ 
+ 
++def _filter_dataset_image_features(dataset: Any, selected_image_features: list[str]) -> None:
++    if not selected_image_features:
++        return
++
++    selected = set(selected_image_features)
++    available = set(dataset.meta.camera_keys)
++    missing = selected - available
++    if missing:
++        raise ValueError(
++            f"selected_image_features contains keys not present in the dataset: {sorted(missing)}. "
++            f"Available image features are: {sorted(available)}"
++        )
++
++    dropped = sorted(available - selected)
++    if dropped:
++        logging.info(f"Using selected image features: {sorted(selected)}; dropping image features: {dropped}")
++
++    dataset.meta.info.features = {
++        key: value
++        for key, value in dataset.meta.info.features.items()
++        if key not in available or key in selected
++    }
++    if dataset.meta.stats is not None:
++        dataset.meta.stats = {
++            key: value for key, value in dataset.meta.stats.items() if key not in available or key in selected
++        }
++
++    # DatasetReader caches per-image depth units at construction time.
++    if hasattr(dataset, "_image_depth_units"):
++        dataset._image_depth_units = {
++            key: value for key, value in dataset._image_depth_units.items() if key in dataset.meta.image_keys
++        }
++
++
++def _filter_policy_image_features(cfg: TrainPipelineConfig) -> None:
++    if cfg.is_reward_model_training or not cfg.selected_image_features:
++        return
++    if not cfg.policy or not cfg.policy.input_features:
++        return
++
++    selected = set(cfg.selected_image_features)
++    filtered = {
++        key: ft
++        for key, ft in cfg.policy.input_features.items()
++        if ft.type is not FeatureType.VISUAL or key in selected
++    }
++    dropped = sorted(set(cfg.policy.input_features) - set(filtered))
++    if dropped:
++        logging.info(f"Dropping policy image features: {dropped}")
++    cfg.policy.input_features = filtered
++
++
+ def update_policy(
+     train_metrics: MetricsTracker,
+     policy: PreTrainedPolicy,
+@@ -264,6 +323,11 @@ def train(cfg: TrainPipelineConfig, accelerator: "Accelerator | None" = None):
+     if not is_main_process:
+         dataset, eval_dataset = make_train_eval_datasets(cfg)
+ 
++    _filter_dataset_image_features(dataset, cfg.selected_image_features)
++    if eval_dataset is not None:
++        _filter_dataset_image_features(eval_dataset, cfg.selected_image_features)
++    _filter_policy_image_features(cfg)
++
+     # Create environment used for evaluating checkpoints during training on simulation data.
+     # On real-world data, no need to create an environment as evaluations are done outside train.py,
+     # using the eval.py instead, with gym_dora environment and dora-rs.
+@@ -412,20 +476,49 @@ def train(cfg: TrainPipelineConfig, accelerator: "Accelerator | None" = None):
+ 
+     # create dataloader for offline training
+     if not cfg.dataset.streaming:
+-        # All non-streaming (map-style) datasets use EpisodeAwareSampler.
+-        # The order is a pure function of (seed, epoch), so every rank independently produces the
+-        # same permutation. accelerate then shards it disjointly across ranks via BatchSamplerShard
+-        # without needing a `generator` attribute to synchronize an RNG, and resume is sample-exact.
++        # The sampler order is a pure function of (seed, epoch), so every rank independently produces
++        # the same sequence. Accelerate shards it disjointly via BatchSamplerShard and resume remains
++        # sample-exact without synchronizing a generator.
+         shuffle = False
+-        sampler = EpisodeAwareSampler(
+-            dataset.meta.episodes["dataset_from_index"],
+-            dataset.meta.episodes["dataset_to_index"],
+-            episode_indices_to_use=dataset.episodes,
+-            drop_n_last_frames=getattr(active_cfg, "drop_n_last_frames", 0),
+-            shuffle=True,
+-            seed=cfg.seed if cfg.seed is not None else 0,
+-            absolute_to_relative_idx=dataset.absolute_to_relative_idx,
+-        )
++        sampler_common = {
++            "dataset_from_indices": dataset.meta.episodes["dataset_from_index"],
++            "dataset_to_indices": dataset.meta.episodes["dataset_to_index"],
++            "episode_indices_to_use": dataset.episodes,
++            "drop_n_last_frames": getattr(active_cfg, "drop_n_last_frames", 0),
++            "seed": cfg.seed if cfg.seed is not None else 0,
++            "absolute_to_relative_idx": dataset.absolute_to_relative_idx,
++        }
++        if cfg.dataset.task_sampling_manifest is not None:
++            manifest_path = Path(cfg.dataset.task_sampling_manifest)
++            if not manifest_path.is_absolute():
++                manifest_path = dataset.meta.root / manifest_path
++            episode_groups = load_episode_groups(manifest_path)
++            group_weights = None
++            if getattr(cfg.dataset, "task_sampling_weights", None):
++                import json as _json
++                _w = _json.loads(Path(cfg.dataset.task_sampling_weights).read_text())
++                group_weights = [1.0] * len(episode_groups)
++                for _k, _v in _w.items():
++                    group_weights[int(_k)] = float(_v)
++            sampler = TaskBalancedSampler(
++                **sampler_common,
++                episode_groups=episode_groups,
++                task_sampling_power=cfg.dataset.task_sampling_power,
++                group_weights=group_weights,
++            )
++            if is_main_process:
++                probabilities = sampler.task_probabilities
++                logging.info(
++                    "Task-balanced sampling enabled: %d groups from %s, power=%.3f, "
++                    "task probability range=[%.6f, %.6f]",
++                    len(probabilities),
++                    manifest_path,
++                    cfg.dataset.task_sampling_power,
++                    probabilities.min(),
++                    probabilities.max(),
++                )
++        else:
++            sampler = EpisodeAwareSampler(**sampler_common, shuffle=True)
+         if cfg.resume and step > 0:
+             # The resume offset depends on the (num_processes, batch_size) that produced `step`, so
+             # use the values recorded in the checkpoint (falling back to the current ones for older

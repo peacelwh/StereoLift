@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+outputs/
+wandb/
+third_party/lerobot/
+third_party/Fast-FoundationStereo/
+*.pth
+*.safetensors
+.DS_Store

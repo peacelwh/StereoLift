@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stereolift"
+version = "1.0.0"
+description = "StereoLift: enhancing vision-language-action models for precise manipulation via calibration-free stereo lifting"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Wenhao Li" }]
+dependencies = [
+  "torch>=2.4",
+  "numpy",
+  "huggingface_hub",
+  "pyarrow",
+  "opencv-python-headless",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["stereolift*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"

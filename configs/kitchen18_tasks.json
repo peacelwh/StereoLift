@@ -1,0 +1,42 @@
+{
+ "tasks": [
+  "CloseBlenderLid",
+  "CloseFridge",
+  "CloseToasterOvenDoor",
+  "CoffeeSetupMug",
+  "NavigateKitchen",
+  "OpenCabinet",
+  "OpenDrawer",
+  "OpenStandMixerHead",
+  "PickPlaceCounterToCabinet",
+  "PickPlaceCounterToStove",
+  "PickPlaceDrawerToCounter",
+  "PickPlaceSinkToCounter",
+  "PickPlaceToasterToCounter",
+  "SlideDishwasherRack",
+  "TurnOffStove",
+  "TurnOnElectricKettle",
+  "TurnOnMicrowave",
+  "TurnOnSinkFaucet"
+ ],
+ "task_index": {
+  "CloseBlenderLid": 3,
+  "CloseFridge": 8,
+  "CloseToasterOvenDoor": 13,
+  "CoffeeSetupMug": 15,
+  "NavigateKitchen": 18,
+  "OpenCabinet": 20,
+  "OpenDrawer": 22,
+  "OpenStandMixerHead": 28,
+  "PickPlaceCounterToCabinet": 33,
+  "PickPlaceCounterToStove": 39,
+  "PickPlaceDrawerToCounter": 41,
+  "PickPlaceSinkToCounter": 45,
+  "PickPlaceToasterToCounter": 48,
+  "SlideDishwasherRack": 50,
+  "TurnOffStove": 56,
+  "TurnOnElectricKettle": 58,
+  "TurnOnMicrowave": 59,
+  "TurnOnSinkFaucet": 60
+ }
+}

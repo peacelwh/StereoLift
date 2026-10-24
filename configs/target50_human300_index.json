@@ -1,0 +1,41 @@
+{
+ "note": "Human300 task index (episodes 100i..100i+99) of the Target50 seen tasks; composite_unseen tasks are not in Human300",
+ "atomic_seen": {
+  "CloseBlenderLid": 3,
+  "CloseFridge": 8,
+  "CloseToasterOvenDoor": 13,
+  "CoffeeSetupMug": 15,
+  "NavigateKitchen": 18,
+  "OpenCabinet": 20,
+  "OpenDrawer": 22,
+  "OpenStandMixerHead": 28,
+  "PickPlaceCounterToCabinet": 33,
+  "PickPlaceCounterToStove": 39,
+  "PickPlaceDrawerToCounter": 41,
+  "PickPlaceSinkToCounter": 45,
+  "PickPlaceToasterToCounter": 48,
+  "SlideDishwasherRack": 50,
+  "TurnOffStove": 56,
+  "TurnOnElectricKettle": 58,
+  "TurnOnMicrowave": 59,
+  "TurnOnSinkFaucet": 60
+ },
+ "composite_seen": {
+  "DeliverStraw": 118,
+  "GetToastedBread": 143,
+  "KettleBoiling": 148,
+  "LoadDishwasher": 152,
+  "PackIdenticalLunches": 184,
+  "PreSoakPan": 203,
+  "PrepareCoffee": 213,
+  "RinseSinkBasin": 245,
+  "ScrubCuttingBoard": 250,
+  "SearingMeat": 251,
+  "SetUpCuttingStation": 258,
+  "StackBowlsCabinet": 273,
+  "SteamInMicrowave": 277,
+  "StirVegetables": 278,
+  "StoreLeftoversInBowl": 282,
+  "WashLettuce": 298
+ }
+}
