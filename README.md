@@ -222,15 +222,10 @@ precision tasks.
 
 ## Visualization
 
-RoboCasa frames processed by a trained Kitchen-18 policy: rectified left and right views, Fast-FoundationStereo
-disparity and confidence, and the attention of the relation tokens, which concentrates on the gripper and on the
-object named by the instruction (`scripts/visualize_beliefs.py`).
-
-<div align="center">
-<img src='assets/qual_attn.png' width='100%'>
-</div>
-
-More rollouts, including the StereoLift rollouts on the humanoid for all six real-robot tasks, are on the [project page](https://peacelwh.github.io/StereoLift/).
+Rollouts of StereoLift on the six humanoid tasks and on RoboCasa365 Target50 are on the
+[project page](https://peacelwh.github.io/StereoLift/). `scripts/visualize_beliefs.py` renders, for a trained
+checkpoint, the rectified pair, the Fast-FoundationStereo disparity and confidence, and the attention of the relation
+tokens over the native belief cells.
 
 ## :fire: Citation
 
