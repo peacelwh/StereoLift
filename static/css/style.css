@@ -39,9 +39,7 @@ a { color: var(--teal-deep); }
 .topbar { position: sticky; top: 0; z-index: 20; background: rgba(246, 243, 234, 0.94); backdrop-filter: blur(8px); border-bottom: var(--frame); }
 .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 54px; gap: 12px; }
 .brand { font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; letter-spacing: 0.01em; text-decoration: none; color: var(--ink); display: flex; align-items: center; gap: 8px; }
-.brand .eye { width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--ink); display: inline-block; }
-.brand .eye.l { background: var(--teal); margin-right: -7px; }
-.brand .eye.r { background: var(--coral); }
+.brand-mark { width: 28px; height: 28px; flex: none; }
 .topnav { display: flex; gap: 16px; font-size: 0.9rem; font-weight: 700; }
 .topnav a { color: var(--ink); text-decoration: none; padding: 3px 8px; border-radius: 999px; border: 2px solid transparent; }
 .topnav a:hover { border-color: var(--ink); background: var(--card); }
