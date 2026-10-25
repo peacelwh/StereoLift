@@ -153,6 +153,8 @@ CHECKPOINT=outputs/kitchen18_100_stereolift/checkpoints/<step>/pretrained_model 
 
 ## Experiments
 
+The tables below are reproduced from the paper.
+
 **RoboCasa365 Target50.** Success rates (%) under the official protocol, with Human300 training and 50 rollouts per
 task. Except for the published pi0.5 result, all methods are trained in our codebase using the same recipe; the
 comparison designs (Multi-view, RGB-D, StereoVLA-style and StereoPolicy-style conditioning) are described in the paper
