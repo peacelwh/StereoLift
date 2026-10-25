@@ -7,7 +7,7 @@
 #
 #   DATASET_ROOT=/path/to/robocasa365_human300 STATS_OVERRIDE=... TASK_MANIFEST=... RUN_NAME=target50_stereolift \
 #       bash scripts/train_robocasa365.sh
-#   DATASET_ROOT=/path/to/robocasa365_kitchen18 EPISODES_FILE=configs/kitchen18_100demos.json STEPS=5000 DECAY_STEPS=20000 \
+#   DATASET_ROOT=/path/to/robocasa365_kitchen18 WARMUP_STEPS=500 STEPS=20000 DECAY_STEPS=20000 \
 #       RUN_NAME=kitchen18_100_stereolift bash scripts/train_robocasa365.sh
 #
 # Every knob is an environment variable; the defaults are the paper's shared recipe (Table of hyper-parameters).

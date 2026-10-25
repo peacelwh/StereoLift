@@ -144,10 +144,10 @@ DATASET_ROOT=/path/to/robocasa365_human300 RUN_NAME=target50_stereolift bash scr
 CHECKPOINT=outputs/target50_stereolift/checkpoints/075000/pretrained_model OUTPUT_ROOT=outputs/eval/target50_stereolift \
   EVAL_GROUPS="atomic_seen composite_seen composite_unseen" N_EPISODES=50 N_ACTION_STEPS=25 bash scripts/eval_robocasa365.sh
 
-# Table 2: Kitchen-18, 100 demonstrations per task, then 50 rollouts per task
+# Table 2: Kitchen-18, 100 demonstrations per task (cosine schedule over 20k steps), then 50 rollouts per task
 DATASET_ROOT=/path/to/robocasa365_kitchen18 RUN_NAME=kitchen18_100_stereolift \
-  WARMUP_STEPS=500 STEPS=5000 DECAY_STEPS=20000 bash scripts/train_robocasa365.sh
-CHECKPOINT=outputs/kitchen18_100_stereolift/checkpoints/005000/pretrained_model OUTPUT_ROOT=outputs/eval/kitchen18_100_stereolift \
+  WARMUP_STEPS=500 STEPS=20000 DECAY_STEPS=20000 bash scripts/train_robocasa365.sh
+CHECKPOINT=outputs/kitchen18_100_stereolift/checkpoints/<step>/pretrained_model OUTPUT_ROOT=outputs/eval/kitchen18_100_stereolift \
   TASK_FILE=configs/kitchen18_tasks.json N_EPISODES=50 N_ACTION_STEPS=5 bash scripts/eval_robocasa365.sh
 ```
 

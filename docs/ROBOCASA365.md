@@ -104,18 +104,19 @@ GPU_IDS=0,1,2,3,4,5,6,7 SHARDS_PER_GPU=2 bash scripts/eval_robocasa365.sh
 
 ## Table 2: Kitchen-18
 
-Joint training on the 18 atomic target tasks with 100 or 30 human demonstrations per task, global batch 64 and the
-cosine schedule defined over 20,000 steps. The reported checkpoint is the 5,000-step checkpoint.
+Joint training on the 18 atomic target tasks with 100 or 30 human demonstrations per task, global batch 64, a
+cosine learning-rate schedule defined over 20,000 steps and 500 warm-up steps. Checkpoints are written every 5,000
+steps.
 
 ```bash
 # 100 demonstrations per task
 DATASET_ROOT=/path/to/robocasa365_kitchen18 RUN_NAME=kitchen18_100_stereolift \
-  WARMUP_STEPS=500 STEPS=5000 DECAY_STEPS=20000 SAVE_FREQ=5000 bash scripts/train_robocasa365.sh
+  WARMUP_STEPS=500 STEPS=20000 DECAY_STEPS=20000 SAVE_FREQ=5000 bash scripts/train_robocasa365.sh
 
 # 30 demonstrations per task
 DATASET_ROOT=/path/to/robocasa365_kitchen18 RUN_NAME=kitchen18_30_stereolift \
   EPISODES_FILE=configs/kitchen18_30demos_release.json STATS_OVERRIDE=/path/to/robocasa365_kitchen18/meta/stats_task_balanced_30demos.json \
-  WARMUP_STEPS=500 STEPS=5000 DECAY_STEPS=20000 SAVE_FREQ=5000 bash scripts/train_robocasa365.sh
+  WARMUP_STEPS=500 STEPS=20000 DECAY_STEPS=20000 SAVE_FREQ=5000 bash scripts/train_robocasa365.sh
 ```
 
 Evaluation: 50 rollouts per task, re-planning every 5 steps, the same scene split, registries, seed and horizons as
@@ -123,7 +124,7 @@ above. Report the mean success over the 18 task means, its standard error, the m
 tasks (`PickPlace*`) and paired per-task differences against the comparison policy.
 
 ```bash
-CHECKPOINT=outputs/kitchen18_100_stereolift/checkpoints/005000/pretrained_model \
+CHECKPOINT=outputs/kitchen18_100_stereolift/checkpoints/<step>/pretrained_model \
 OUTPUT_ROOT=outputs/eval/kitchen18_100_stereolift \
 TASK_FILE=configs/kitchen18_tasks.json N_EPISODES=50 N_ACTION_STEPS=5 GPU_IDS=0,1,2,3,4,5,6,7 bash scripts/eval_robocasa365.sh
 ```
