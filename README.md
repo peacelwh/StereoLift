@@ -230,7 +230,7 @@ object named by the instruction (`scripts/visualize_beliefs.py`).
 <img src='assets/qual_attn.png' width='100%'>
 </div>
 
-More rollouts, including all real-robot videos, are on the [project page](https://peacelwh.github.io/StereoLift/).
+More rollouts, including the StereoLift rollouts on the humanoid for all six real-robot tasks, are on the [project page](https://peacelwh.github.io/StereoLift/).
 
 ## :fire: Citation
 
