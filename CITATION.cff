@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+message: "If you find this work useful for your research, please cite our paper."
+title: "StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting"
+type: software
+authors:
+  - family-names: Li
+    given-names: Wenhao
+    affiliation: "School of Software, Shandong University; Shenzhen Loop Area Institute"
+  - family-names: Han
+    given-names: Zhongyi
+    affiliation: "School of Software, Shandong University"
+  - family-names: Sun
+    given-names: Changfeng
+    affiliation: "School of Computer Science and Technology, Harbin Institute of Technology (Shenzhen)"
+  - family-names: Han
+    given-names: Liang
+    affiliation: "School of Computer Science and Technology, Harbin Institute of Technology (Shenzhen)"
+  - family-names: Yin
+    given-names: Yilong
+    affiliation: "School of Software, Shandong University"
+  - family-names: Nie
+    given-names: Liqiang
+    affiliation: "School of Computer Science and Technology, Harbin Institute of Technology (Shenzhen)"
+repository-code: "https://github.com/peacelwh/StereoLift"
+url: "https://peacelwh.github.io/StereoLift/"
+license: MIT
+keywords:
+  - vision-language-action model
+  - stereo vision
+  - spatial intelligence
+  - robotic manipulation
+  - dexterous manipulation
+preferred-citation:
+  type: generic
+  title: "StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting"
+  authors:
+    - family-names: Li
+      given-names: Wenhao
+    - family-names: Han
+      given-names: Zhongyi
+    - family-names: Sun
+      given-names: Changfeng
+    - family-names: Han
+      given-names: Liang
+    - family-names: Yin
+      given-names: Yilong
+    - family-names: Nie
+      given-names: Liqiang
+  year: 2026
+  url: "https://github.com/peacelwh/StereoLift"
