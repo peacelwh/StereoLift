@@ -11,7 +11,7 @@ correction is a constant vertical offset of the right image estimated from the d
 * `scripts/train_real_robot.sh`: fine-tuning launcher
 * `scripts/smoke_test_policy.py`: builds the policy on a few frames and runs training and inference steps
 * `stereolift/modeling_pi05_stereolift.py`: `PI05StereoLiftPolicy.last_stereo_confidence` is the mean stereo
-  confidence of the last observation (Algorithm 1), the signal used for failure monitoring
+  confidence of the last observation, the signal used for failure monitoring
 
 ## Dataset format
 
@@ -19,13 +19,13 @@ A LeRobot v3 dataset with
 
 | key | shape | note |
 |---|---|---|
-| `observation.images.head_left`, `observation.images.head_right` | 480 × 480 × 3 video, 30 fps | the stereo pair (any other cameras are ignored by the launcher) |
+| `observation.images.head_left`, `observation.images.head_right` | 480 × 640 × 3 video (640 × 480 pixels), 30 fps | the stereo pair (any other cameras are ignored by the launcher) |
 | `observation.state` | 26 | left arm 7, right arm 7, left hand 6, right hand 6 |
 | `action` | 26 | same layout, joint targets |
 | `task` | string | the language instruction |
 
-Each of our six tasks (InsertRing, StackCup, RemoveCap, BuildBlocks, HandoverBanana, DrawerItem) was trained from
-100 teleoperated demonstrations.
+Each policy for our six tasks (InsertRing, StackCup, RemoveCap, BuildBlocks, HandoverBanana, DrawerItem) is trained
+from 100 demonstrations.
 
 ## Rectification
 
@@ -64,7 +64,6 @@ first chunk after the approach is the early-stop criterion of the paper.
 
 ## Evaluation protocol
 
-20 trials per task with randomised object poses within the demonstration distribution; a trial succeeds only if all
-stages succeed; stage-wise success (approach, align, execute) is recorded by the operator. Perturbation trials (10
-each) move the target 10 or 20 cm closer or farther than in the demonstrations, tilt the head by ±5°, or cover one
-lens for 1 s during the approach.
+Each policy is evaluated over 20 trials per task, with additional perturbation trials: target depth shifts of ±10 cm
+and ±20 cm, head tilts of ±5°, and one-second occlusion of one lens during the approach. Stage-wise success (approach,
+align, execute) is reported for the three precision tasks InsertRing, StackCup and RemoveCap.

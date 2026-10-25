@@ -217,7 +217,7 @@ class PI05StereoLiftPolicy(PI05Policy):
 
     @property
     def last_stereo_confidence(self) -> Tensor | None:
-        """Mean stereo confidence c-bar of the last processed batch (Algorithm 1), for failure monitoring."""
+        """Mean stereo confidence c-bar of the last processed batch, the signal used for failure monitoring."""
         return self.model.stereo_aux.get("mean_conf")
 
     # -------------------------------------------------------------- training

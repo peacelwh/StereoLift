@@ -10,7 +10,7 @@
 #   DATASET_ROOT=/path/to/robocasa365_kitchen18 WARMUP_STEPS=500 STEPS=20000 DECAY_STEPS=20000 \
 #       RUN_NAME=kitchen18_100_stereolift bash scripts/train_robocasa365.sh
 #
-# Every knob is an environment variable; the defaults are the paper's shared recipe (Table of hyper-parameters).
+# Every knob is an environment variable; the defaults are listed in docs/ROBOCASA365.md (Default hyper-parameters).
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 PYTHON_BIN=${PYTHON:-python}

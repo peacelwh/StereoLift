@@ -60,7 +60,7 @@ Episode `100 k .. 100 k + 99` of the released dataset is task *k* of `configs/ki
 camera parameters with `scripts/compute_robocasa_rectification.py`. They are applied inside the policy; the policy
 itself never receives camera parameters.
 
-## Shared training recipe
+## Default hyper-parameters
 
 | Hyper-parameter | Value |
 |---|---|
@@ -138,7 +138,7 @@ TASK_FILE=configs/kitchen18_tasks.json N_EPISODES=50 N_ACTION_STEPS=5 GPU_IDS=0,
 | C | without geometric token embedding | `USE_GEOMETRIC_EMBEDDING=false` |
 | D | point estimate instead of belief ([b; c] → d_K) | `BELIEF_POINT_ONLY=true` |
 
-### Robustness, baseline scaling, assumed intrinsics and anytime refinement (Section Q3)
+### Robustness, baseline scaling, assumed intrinsics and anytime refinement (Section 4.4, Figure 5)
 
 All of these evaluate the nominal Kitchen-18 policy without retraining, on the six tasks of
 `configs/kitchen6_tasks.json` with 20 rollouts per task:

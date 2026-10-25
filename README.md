@@ -51,9 +51,10 @@ conditions a pretrained VLA on the disparity belief of a real-time zero-shot ste
 2. **language-conditioned relation tokens** read hand-object relations at native disparity precision.
 
 We prove that lifting preserves geometry up to a fixed linear map and show that belief conditioning never increases
-flow-matching risk relative to point estimates. On RoboCasa365, StereoLift raises the success rate of the base VLA
-from 16.9% to 35.2% and outperforms four conditioning designs under one training recipe. On a humanoid with two
-dexterous hands, it raises average success from 33.3% to 81.7% while remaining robust to depth shifts.
+flow-matching risk relative to point estimates. Experiments on RoboCasa365 show that, under a unified backbone and
+training setup, StereoLift achieves the highest success rate among the compared stereo conditioning methods and raises
+that of the base VLA from 16.9% to 34.5%. Notably, on a humanoid with two dexterous hands, StereoLift raises average
+success from 33.3% to 81.7% while remaining robust to depth shifts.
 
 <div align="center">
 <img src='assets/teaser.png' width='100%'>
@@ -156,18 +157,18 @@ CHECKPOINT=outputs/kitchen18_100_stereolift/checkpoints/<step>/pretrained_model 
 The tables below are reproduced from the paper.
 
 **RoboCasa365 Target50.** Success rates (%) under the official protocol, with Human300 training and 50 rollouts per
-task. Except for the published pi0.5 result, all methods are trained in our codebase using the same recipe; the
-comparison designs (Multi-view, RGB-D, StereoVLA-style and StereoPolicy-style conditioning) are described in the paper
-and are not part of this release.
+task. Except for the published pi0.5 result, all methods are trained in our codebase using the same recipe. The
+comparison designs (Multi-view, RGB-D, StereoVLA and StereoPolicy) are described in the paper and are not part of
+this release.
 
 | Method | Atomic seen | Composite seen | Composite unseen | Overall |
 |---|:-:|:-:|:-:|:-:|
-| pi0.5 (RGB, published) | 39.6 | 7.1 | 1.2 | 16.9 |
-| Multi-view | 56.4 | 24.4 | 10.0 | 31.7 |
-| RGB-D | 55.9 | 23.0 | 8.1 | 30.5 |
-| StereoVLA | 50.3 | 28.1 | 7.7 | 30.0 |
-| StereoPolicy | 56.8 | 26.4 | 10.9 | 32.8 |
-| **StereoLift (ours)** | **60.3** | **29.4** | **11.3** | **35.2** |
+| RGB (published pi0.5) | 39.6 | 7.1 | 1.2 | 16.9 |
+| Multi-view | 56.4 | 24.4 | 9.4 | 31.1 |
+| RGB-D | 55.9 | 23.0 | 7.6 | 29.9 |
+| StereoVLA | 50.3 | 28.1 | 7.2 | 29.4 |
+| StereoPolicy | 56.8 | 26.4 | 10.2 | 32.2 |
+| **StereoLift (ours)** | **60.3** | **29.4** | **10.6** | **34.5** |
 
 **Kitchen-18.** Success rates (%) with 50 rollouts per task. The 100-demonstration results report the task mean ±
 standard error across 18 tasks; PnP is the mean over the five pick-and-place tasks; the last column is the same
@@ -176,7 +177,7 @@ configuration within each demonstration budget.
 
 | Method | Conditioning representation | 100 demos | PnP | 30 demos |
 |---|---|:-:|:-:|:-:|
-| RGB (pi0.5) | none | 46.6 ± 3.4 | 46.0 | 50.8 |
+| RGB | none | 46.6 ± 3.4 | 46.0 | 50.8 |
 | Multi-view | second-view tokens | 50.8 ± 5.2 | 69.0 | 43.1 |
 | RGB-D | disparity channel | 50.8 ± 5.8 | 64.4 | 44.8 |
 | StereoVLA | pooled cost volume | 51.1 ± 5.6 | 46.0 | 39.3 |
@@ -193,17 +194,18 @@ configuration within each demonstration budget.
 | D | point estimate instead of belief ([b; c] → d_K) | information beyond the point estimate | 51.8 | −4.4 |
 
 **Humanoid with two dexterous hands.** Successful trials out of 20 per task and the average success rate (%) on the
-G1-D humanoid; † denotes bimanual tasks. All policies are fine-tuned from pi0.5 using the same training configuration.
+G1-D humanoid with two BrainCo dexterous hands. All policies are fine-tuned from pi0.5 using the same training
+configuration.
 
-| Method | InsertRing | StackCup | RemoveCap | BuildBlocks† | Handover† | DrawerItem | Average (%) |
+| Method | InsertRing | StackCup | RemoveCap | BuildBlocks | Handover | DrawerItem | Average (%) |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| pi0.5 (RGB) | 8 | 9 | 7 | 0 | 9 | 7 | 33.3 |
-| RGB-D (FFS disparity) | 10 | 11 | 9 | 2 | 11 | 9 | 43.3 |
+| RGB | 8 | 9 | 7 | 0 | 9 | 7 | 33.3 |
+| RGB-D | 10 | 11 | 9 | 2 | 11 | 9 | 43.3 |
 | StereoVLA | 12 | 11 | 10 | 1 | 16 | 17 | 55.8 |
 | StereoPolicy | 11 | 10 | 9 | 2 | 15 | 15 | 51.7 |
 | **StereoLift (ours)** | **16** | **15** | **19** | **8** | **20** | **20** | **81.7** |
 
-Under target depth shifts of ±20 cm StereoLift keeps 61.7% success (monocular pi0.5: 26.7%), and the mean stereo
+Under target depth shifts of ±20 cm StereoLift keeps 61.7% success (monocular RGB: 26.7%), and the mean stereo
 confidence of the first action chunk after the approach predicts failures with an AUROC of 0.84 on the three
 precision tasks.
 

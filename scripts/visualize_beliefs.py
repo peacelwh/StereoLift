@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Qualitative figure of a trained StereoLift checkpoint: rectified pair, FFS disparity, confidence and the attention
-of the relation tokens over the native belief cells (the figure of the paper's qualitative appendix).
+of the relation tokens over the native belief cells.
 
   CUDA_VISIBLE_DEVICES=0 python scripts/visualize_beliefs.py \
       --checkpoint outputs/kitchen18_100_stereolift/checkpoints/005000/pretrained_model \
