@@ -12,13 +12,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800;900&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="static/css/style.css?v=20261025e">
-<link rel="icon" type="image/svg+xml" href="static/images/hand.svg?v=20261025e">
+<link rel="stylesheet" href="static/css/style.css?v=20261025f">
+<link rel="icon" type="image/svg+xml" href="static/images/stereolift.svg?v=20261025f">
 </head>
 <body>
 
 <div class="topbar"><div class="wrap">
-  <a class="brand" href="#top"><img class="brand-mark" src="static/images/hand.svg?v=20261025e" alt="" width="28" height="28">StereoLift</a>
+  <a class="brand" href="#top"><img class="brand-mark" src="static/images/stereolift.svg?v=20261025f" alt="" width="28" height="28">StereoLift</a>
   <nav class="topnav">
     <a href="#abstract">Abstract</a><a href="#method">Method</a><a href="#real">Humanoid</a><a href="#sim">RoboCasa365</a><a href="#results">Results</a><a href="#citation">BibTeX</a>
   </nav>
@@ -66,7 +66,7 @@
     <div class="panel l">
       <span class="tag">LEFT &middot; humanoid, two dexterous hands</span>
       <video data-real data-autoplay preload="metadata" poster="static/videos/real/InsertRing.jpg" src="static/videos/real/InsertRing.mp4"></video>
-      <div class="cap"><span><b>InsertRing</b>, a StereoLift rollout on the Unitree G1-D with BrainCo hands</span><span>640&times;480 head stereo pair, B/Z &asymp; 0.15</span></div>
+      <div class="cap"><span><b>InsertRing</b>, a StereoLift rollout on the Unitree G1-D with BrainCo hands</span><span>640&times;480 head stereo pair, B/Z = 0.15</span></div>
     </div>
     <div class="panel r">
       <span class="tag">RIGHT &middot; RoboCasa365</span>
@@ -77,7 +77,7 @@
     </div>
   </div>
   <div class="stats">
-    <div class="stat teal"><div class="n">16.9<small>&rarr;</small>35.2</div><div class="d">RoboCasa365 Target50 success (%), published pi0.5 &rarr; StereoLift</div></div>
+    <div class="stat teal"><div class="n">16.9<small>&rarr;</small>34.5</div><div class="d">RoboCasa365 Target50 success (%), published pi0.5 &rarr; StereoLift</div></div>
     <div class="stat coral"><div class="n">33.3<small>&rarr;</small>81.7</div><div class="d">Humanoid average success (%) over six dexterous tasks, RGB &rarr; StereoLift</div></div>
     <div class="stat teal"><div class="n">60.3<small>vs</small>46.6</div><div class="d">Kitchen-18 success (%), StereoLift vs monocular RGB under one recipe</div></div>
     <div class="stat coral"><div class="n">+31.4<small>ms</small></div><div class="d">Overhead per 50-step action chunk, the lowest among the geometry-conditioned designs</div></div>
@@ -88,7 +88,7 @@
 
 <section id="abstract">
   <h2><span class="num">01</span>Abstract</h2>
-  <div class="box"><p class="lead" style="margin:0">Vision-language-action (VLA) models inherit rich semantics from large-scale pretraining but capture limited metric geometry from monocular images, hindering precise and contact-rich manipulation. Existing approaches inject geometry through depth maps, point clouds, or auxiliary 3D objectives. However, they typically require camera calibration, discard depth uncertainty, or modify the pretrained backbone. To address these limitations, we propose <b>StereoLift</b>, a calibration-free framework that conditions a pretrained VLA on the disparity belief of a real-time zero-shot stereo foundation model. First, a <b>geometric token embedding</b> lifts each visual token into an affine-equivalent 3D frame using assumed intrinsics. A single zero-initialized projection injects the lifted coordinate and belief into the token. Second, language-conditioned <b>relation tokens</b> read hand-object relations at native disparity precision. We prove that lifting preserves geometry up to a fixed linear map and show that belief conditioning never increases flow-matching risk relative to point estimates. Experiments on RoboCasa365 show that StereoLift sets a new state of the art, raising the success rate of the base VLA from 16.9% to 35.2% and outperforming four conditioning designs under one training recipe. Notably, on a humanoid with two dexterous hands, StereoLift raises average success from 33.3% to 81.7% while remaining robust to depth shifts.</p></div>
+  <div class="box"><p class="lead" style="margin:0">Vision-language-action (VLA) models inherit rich semantics from large-scale pretraining but capture limited metric geometry from monocular images, hindering precise and contact-rich manipulation. Existing approaches inject geometry through depth maps, point clouds, or auxiliary 3D objectives. However, they typically require camera calibration, discard depth uncertainty, or modify the pretrained backbone. To address these limitations, we propose <b>StereoLift</b>, a calibration-free framework that conditions a pretrained VLA on the disparity belief of a real-time zero-shot stereo foundation model. First, a <b>geometric token embedding</b> lifts each visual token into an affine-equivalent 3D frame using assumed intrinsics. A single zero-initialized projection injects the lifted coordinate and belief into the token. Second, language-conditioned <b>relation tokens</b> read hand-object relations at native disparity precision. We prove that lifting preserves geometry up to a fixed linear map and show that belief conditioning never increases flow-matching risk relative to point estimates. Experiments on RoboCasa365 show that, under a unified backbone and training setup, StereoLift achieves the highest success rate among the compared stereo conditioning methods and raises that of the base VLA from 16.9% to 34.5%. Notably, on a humanoid with two dexterous hands, StereoLift raises average success from 33.3% to 81.7% while remaining robust to depth shifts.</p></div>
   <figure class="figure" style="margin:22px 0 0">
     <img src="static/images/teaser.png" alt="Overview of StereoLift: existing geometry conditioning, the StereoLift interface, and the performance comparisons">
     <figcaption>(a) Existing methods incorporate geometry through cost volumes, learned correspondence, or depth point estimates. (b) StereoLift combines calibration-free belief lifting with task-conditioned relation tokens to enhance pretrained VLAs for precise manipulation. (c) Performance on RoboCasa365, Kitchen-18 and humanoid manipulation, including robustness to depth shifts.</figcaption>
@@ -121,7 +121,7 @@
       <p>Confidence-weighted pooling aligns the belief with the \(16\times16\) token grid and a zero-initialized residual adds it to each visual token. Sixteen FiLM-conditioned queries then attend over all native cells, with a penalty on unreliable ones:</p>
       <div class="eq">\[ \tilde t_i=t_i+W_o\,\mathrm{LN}\!\big(\mathrm{MLP}([\bar b_i;\bar c_i])+W_p\,\phi(\bar X'_i)\big),\qquad W_o\leftarrow 0 \]
       \[ \alpha_{mj}=\operatorname{softmax}_j\!\Big(\tfrac{\langle W_q q_m,\,k_j\rangle}{\sqrt{d_k}}-\lambda\,(1-c_j)\Big) \]</div>
-      <p>with \(\lambda=4\). Training uses only the flow-matching loss. The interface adds 3.3 M parameters.</p>
+      <p>with \(\lambda=4\). Training uses only the flow-matching loss.</p>
     </div>
   </div>
 </section>
@@ -139,27 +139,27 @@
   <div class="grid real">
     <div class="vcard">
       <video data-real data-autoplay preload="none" poster="static/videos/real/InsertRing.jpg" src="static/videos/real/InsertRing.mp4"></video>
-      <div class="meta"><div class="t">InsertRing <span class="pill">16 / 20 &nbsp;(RGB 8)</span></div><p>Insert two rings onto a vertical pillar with about 3 mm of clearance, the first with the right hand and the second with the left hand.</p></div>
+      <div class="meta"><div class="t">InsertRing <span class="pill">16 / 20 &nbsp;(RGB 8)</span></div><p>Precise alignment: grasp two rings and insert them onto a pillar, one after the other.</p></div>
     </div>
     <div class="vcard">
       <video data-real data-autoplay preload="none" poster="static/videos/real/StackCup.jpg" src="static/videos/real/StackCup.mp4"></video>
-      <div class="meta"><div class="t">StackCup <span class="pill">15 / 20 &nbsp;(RGB 9)</span></div><p>Stack three inverted paper cups into a pyramid, two at the bottom and one on top, with both hands.</p></div>
+      <div class="meta"><div class="t">StackCup <span class="pill">15 / 20 &nbsp;(RGB 9)</span></div><p>Three-cup stacking.</p></div>
     </div>
     <div class="vcard">
       <video data-real data-autoplay preload="none" poster="static/videos/real/RemoveCap.jpg" src="static/videos/real/RemoveCap.mp4"></video>
-      <div class="meta"><div class="t">RemoveCap <span class="pill">19 / 20 &nbsp;(RGB 7)</span></div><p>Unscrew a black cap from a green bottle held by the other hand.</p></div>
+      <div class="meta"><div class="t">RemoveCap <span class="pill">19 / 20 &nbsp;(RGB 7)</span></div><p>Cap removal: take the cap off a bottle.</p></div>
     </div>
     <div class="vcard">
       <video data-real data-autoplay preload="none" poster="static/videos/real/BuildBlocks.jpg" src="static/videos/real/BuildBlocks.mp4"></video>
-      <div class="meta"><div class="t">BuildBlocks <span class="pill bi">8 / 20 &nbsp;(RGB 0)</span></div><p>Bimanual: one hand lifts a base brick and holds it while the other hand plugs three blocks into it.</p></div>
+      <div class="meta"><div class="t">BuildBlocks <span class="pill bi">8 / 20 &nbsp;(RGB 0)</span></div><p>Bimanual assembly: lift a base brick, insert three blocks into it, and place the assembly.</p></div>
     </div>
     <div class="vcard">
       <video data-real data-autoplay preload="none" poster="static/videos/real/HandoverBanana.jpg" src="static/videos/real/HandoverBanana.mp4"></video>
-      <div class="meta"><div class="t">HandoverBanana <span class="pill bi">20 / 20 &nbsp;(RGB 9)</span></div><p>Bimanual: pick the banana with one hand, hand it over to the other hand, and place it.</p></div>
+      <div class="meta"><div class="t">HandoverBanana <span class="pill bi">20 / 20 &nbsp;(RGB 9)</span></div><p>Bimanual handover of a banana between the two hands.</p></div>
     </div>
     <div class="vcard">
       <video data-real data-autoplay preload="none" poster="static/videos/real/DrawerItem.jpg" src="static/videos/real/DrawerItem.mp4"></video>
-      <div class="meta"><div class="t">DrawerItem <span class="pill">20 / 20 &nbsp;(RGB 7)</span></div><p>Open a drawer, place an item inside and close it: a long-horizon task with occlusion.</p></div>
+      <div class="meta"><div class="t">DrawerItem <span class="pill">20 / 20 &nbsp;(RGB 7)</span></div><p>Long-horizon manipulation of an item and a drawer, with occlusion.</p></div>
     </div>
   </div>
   <figure class="figure" style="margin-top:22px">
@@ -216,12 +216,12 @@
   <div class="tablewrap"><table>
     <thead><tr><th>Method</th><th>Atomic seen</th><th>Composite seen</th><th>Composite unseen</th><th>Overall</th></tr></thead>
     <tbody>
-      <tr><td>pi0.5 (RGB, published)</td><td>39.6</td><td>7.1</td><td>1.2</td><td>16.9</td></tr>
-      <tr><td>Multi-view</td><td>56.4</td><td>24.4</td><td>10.0</td><td>31.7</td></tr>
-      <tr><td>RGB-D</td><td>55.9</td><td>23.0</td><td>8.1</td><td>30.5</td></tr>
-      <tr><td>StereoVLA</td><td>50.3</td><td>28.1</td><td>7.7</td><td>30.0</td></tr>
-      <tr><td>StereoPolicy</td><td>56.8</td><td>26.4</td><td>10.9</td><td>32.8</td></tr>
-      <tr class="ours"><td>StereoLift (ours)</td><td>60.3</td><td>29.4</td><td>11.3</td><td>35.2</td></tr>
+      <tr><td>RGB (published pi0.5)</td><td>39.6</td><td>7.1</td><td>1.2</td><td>16.9</td></tr>
+      <tr><td>Multi-view</td><td>56.4</td><td>24.4</td><td>9.4</td><td>31.1</td></tr>
+      <tr><td>RGB-D</td><td>55.9</td><td>23.0</td><td>7.6</td><td>29.9</td></tr>
+      <tr><td>StereoVLA</td><td>50.3</td><td>28.1</td><td>7.2</td><td>29.4</td></tr>
+      <tr><td>StereoPolicy</td><td>56.8</td><td>26.4</td><td>10.2</td><td>32.2</td></tr>
+      <tr class="ours"><td>StereoLift (ours)</td><td>60.3</td><td>29.4</td><td>10.6</td><td>34.5</td></tr>
     </tbody>
   </table></div>
   <p class="tabnote">Success rates (%) with Human300 training and 50 rollouts per task. Except for the published pi0.5 result, all methods are trained in our codebase using the same recipe.</p>
@@ -232,7 +232,7 @@
       <div class="tablewrap"><table>
         <thead><tr><th>Method</th><th>Representation</th><th>100 demos</th><th>PnP</th><th>30 demos</th></tr></thead>
         <tbody>
-          <tr><td>RGB (pi0.5)</td><td>none</td><td>46.6 &plusmn; 3.4</td><td>46.0</td><td>50.8</td></tr>
+          <tr><td>RGB</td><td>none</td><td>46.6 &plusmn; 3.4</td><td>46.0</td><td>50.8</td></tr>
           <tr><td>Multi-view</td><td>second-view tokens</td><td>50.8 &plusmn; 5.2</td><td>69.0</td><td>43.1</td></tr>
           <tr><td>RGB-D</td><td>disparity channel</td><td>50.8 &plusmn; 5.8</td><td>64.4</td><td>44.8</td></tr>
           <tr><td>StereoVLA</td><td>pooled cost volume</td><td>51.1 &plusmn; 5.6</td><td>46.0</td><td>39.3</td></tr>
@@ -267,16 +267,16 @@
 
   <h3>Humanoid: successes out of 20 trials</h3>
   <div class="tablewrap"><table>
-    <thead><tr><th>Method</th><th>InsertRing</th><th>StackCup</th><th>RemoveCap</th><th>BuildBlocks&#8224;</th><th>Handover&#8224;</th><th>DrawerItem</th><th>Average (%)</th></tr></thead>
+    <thead><tr><th>Method</th><th>InsertRing</th><th>StackCup</th><th>RemoveCap</th><th>BuildBlocks</th><th>Handover</th><th>DrawerItem</th><th>Average (%)</th></tr></thead>
     <tbody>
-      <tr><td>pi0.5 (RGB)</td><td>8</td><td>9</td><td>7</td><td>0</td><td>9</td><td>7</td><td>33.3</td></tr>
-      <tr><td>RGB-D (FFS disparity)</td><td>10</td><td>11</td><td>9</td><td>2</td><td>11</td><td>9</td><td>43.3</td></tr>
+      <tr><td>RGB</td><td>8</td><td>9</td><td>7</td><td>0</td><td>9</td><td>7</td><td>33.3</td></tr>
+      <tr><td>RGB-D</td><td>10</td><td>11</td><td>9</td><td>2</td><td>11</td><td>9</td><td>43.3</td></tr>
       <tr><td>StereoVLA</td><td>12</td><td>11</td><td>10</td><td>1</td><td>16</td><td>17</td><td>55.8</td></tr>
       <tr><td>StereoPolicy</td><td>11</td><td>10</td><td>9</td><td>2</td><td>15</td><td>15</td><td>51.7</td></tr>
       <tr class="ours"><td>StereoLift (ours)</td><td>16</td><td>15</td><td>19</td><td>8</td><td>20</td><td>20</td><td>81.7</td></tr>
     </tbody>
   </table></div>
-  <p class="tabnote">&#8224; bimanual tasks. All policies are fine-tuned from pi0.5 using the same training configuration.</p>
+  <p class="tabnote">Real-robot results on the G1-D humanoid with two BrainCo dexterous hands, successful trials out of 20 per task. All policies are fine-tuned from pi0.5 using the same training configuration.</p>
 
   <h3>Robustness to the rig and anytime refinement</h3>
   <figure class="figure">
@@ -307,6 +307,6 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js" crossorigin="anonymous"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js" crossorigin="anonymous"
   onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false});"></script>
-<script src="static/js/main.js?v=20261025e"></script>
+<script src="static/js/main.js?v=20261025f"></script>
 </body>
 </html>
