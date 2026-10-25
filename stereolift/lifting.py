@@ -26,10 +26,11 @@ class AffineLifter(nn.Module):
     def __init__(self, fov_deg: float = 60.0, scale: float = 0.03, min_disp_norm: float = 1e-4):
         super().__init__()
         f_norm = 1.0 / (2.0 * math.tan(math.radians(fov_deg) / 2.0))  # f' / W
-        self.register_buffer("f_norm", torch.tensor(float(f_norm)))
-        self.register_buffer("cx_norm", torch.tensor(0.5))  # c'_x / W
-        self.register_buffer("cy_norm", torch.tensor(0.5))  # c'_y / H
-        self.register_buffer("scale", torch.tensor(float(scale)))
+        # constants (recomputed from the config at construction, hence not part of the checkpoint)
+        self.register_buffer("f_norm", torch.tensor(float(f_norm)), persistent=False)
+        self.register_buffer("cx_norm", torch.tensor(0.5), persistent=False)  # c'_x / W
+        self.register_buffer("cy_norm", torch.tensor(0.5), persistent=False)  # c'_y / H
+        self.register_buffer("scale", torch.tensor(float(scale)), persistent=False)
         self.min_disp_norm = float(min_disp_norm)  # delta_d, the numerical floor for small disparities
 
     def forward(self, u: Tensor, v: Tensor, d: Tensor, width: float, height: float) -> Tensor:
@@ -50,7 +51,7 @@ class FourierFeatures(nn.Module):
     def __init__(self, bands: int = 8, max_log2_freq: float = 4.0):
         super().__init__()
         freqs = 2.0 ** torch.linspace(0.0, max_log2_freq, bands) * (math.pi / 2.0)
-        self.register_buffer("freqs", freqs)
+        self.register_buffer("freqs", freqs, persistent=False)  # fixed, recomputed from the config
         self.out_dim = 6 * bands
 
     def forward(self, x: Tensor) -> Tensor:
