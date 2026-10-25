@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800;900&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="static/css/style.css?v=20261025c">
+<link rel="stylesheet" href="static/css/style.css?v=20261025d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='12' cy='16' r='9' fill='%230f8b8d'/%3E%3Ccircle cx='20' cy='16' r='9' fill='%23e4572e' fill-opacity='.85'/%3E%3C/svg%3E">
 </head>
 <body>
@@ -65,7 +65,7 @@
   <div class="pair">
     <div class="panel l">
       <span class="tag">LEFT &middot; humanoid, two dexterous hands</span>
-      <video data-autoplay preload="metadata" poster="static/videos/real/InsertRing.jpg" src="static/videos/real/InsertRing.mp4"></video>
+      <video data-real data-autoplay preload="metadata" poster="static/videos/real/InsertRing.jpg" src="static/videos/real/InsertRing.mp4"></video>
       <div class="cap"><span><b>InsertRing</b>, a StereoLift rollout on the Unitree G1-D with BrainCo hands</span><span>640&times;480 head stereo pair, B/Z &asymp; 0.15</span></div>
     </div>
     <div class="panel r">
@@ -129,29 +129,36 @@
 <section id="real">
   <h2><span class="num">03</span>StereoLift on a humanoid with two dexterous hands</h2>
   <p class="lead">Six tasks on a Unitree G1-D humanoid with two BrainCo 6-DoF hands (26-dimensional actions): precise alignment, three-cup stacking, cap removal, bimanual assembly and handover, and long-horizon manipulation with occlusion. The head-mounted 640&times;480 stereo pair is used without calibration; the only correction is a constant vertical offset of &minus;4.15 pixels estimated from the data. Each policy is trained from 100 demonstrations and evaluated over 20 trials per task. Every clip below is a rollout of the deployed StereoLift policy on the robot; the counts next to each task are the successes out of 20 for StereoLift and for the monocular pi0.5 baseline trained with the same configuration.</p>
+  <div class="speedbar">
+    <span>Playback speed</span>
+    <div class="seg" role="group" aria-label="Playback speed of all real-robot clips">
+      <button type="button" data-speed-all="1" aria-pressed="false">1&times;</button><button type="button" data-speed-all="3" aria-pressed="true">3&times;</button>
+    </div>
+    <span class="hint">Real-robot clips play at 3&times; by default. Choose 1&times; for real time, here for all clips or on each clip.</span>
+  </div>
   <div class="grid real">
     <div class="vcard">
-      <video data-autoplay preload="none" poster="static/videos/real/InsertRing.jpg" src="static/videos/real/InsertRing.mp4"></video>
+      <video data-real data-autoplay preload="none" poster="static/videos/real/InsertRing.jpg" src="static/videos/real/InsertRing.mp4"></video>
       <div class="meta"><div class="t">InsertRing <span class="pill">16 / 20 &nbsp;(RGB 8)</span></div><p>Insert two rings onto a vertical pillar with about 3 mm of clearance, the first with the right hand and the second with the left hand.</p></div>
     </div>
     <div class="vcard">
-      <video data-autoplay preload="none" poster="static/videos/real/StackCup.jpg" src="static/videos/real/StackCup.mp4"></video>
+      <video data-real data-autoplay preload="none" poster="static/videos/real/StackCup.jpg" src="static/videos/real/StackCup.mp4"></video>
       <div class="meta"><div class="t">StackCup <span class="pill">15 / 20 &nbsp;(RGB 9)</span></div><p>Stack three inverted paper cups into a pyramid, two at the bottom and one on top, with both hands.</p></div>
     </div>
     <div class="vcard">
-      <video data-autoplay preload="none" poster="static/videos/real/RemoveCap.jpg" src="static/videos/real/RemoveCap.mp4"></video>
+      <video data-real data-autoplay preload="none" poster="static/videos/real/RemoveCap.jpg" src="static/videos/real/RemoveCap.mp4"></video>
       <div class="meta"><div class="t">RemoveCap <span class="pill">19 / 20 &nbsp;(RGB 7)</span></div><p>Unscrew a black cap from a green bottle held by the other hand.</p></div>
     </div>
     <div class="vcard">
-      <video data-autoplay preload="none" poster="static/videos/real/BuildBlocks.jpg" src="static/videos/real/BuildBlocks.mp4"></video>
+      <video data-real data-autoplay preload="none" poster="static/videos/real/BuildBlocks.jpg" src="static/videos/real/BuildBlocks.mp4"></video>
       <div class="meta"><div class="t">BuildBlocks <span class="pill bi">8 / 20 &nbsp;(RGB 0)</span></div><p>Bimanual: one hand lifts a base brick and holds it while the other hand plugs three blocks into it.</p></div>
     </div>
     <div class="vcard">
-      <video data-autoplay preload="none" poster="static/videos/real/HandoverBanana.jpg" src="static/videos/real/HandoverBanana.mp4"></video>
+      <video data-real data-autoplay preload="none" poster="static/videos/real/HandoverBanana.jpg" src="static/videos/real/HandoverBanana.mp4"></video>
       <div class="meta"><div class="t">HandoverBanana <span class="pill bi">20 / 20 &nbsp;(RGB 9)</span></div><p>Bimanual: pick the banana with one hand, hand it over to the other hand, and place it.</p></div>
     </div>
     <div class="vcard">
-      <video data-autoplay preload="none" poster="static/videos/real/DrawerItem.jpg" src="static/videos/real/DrawerItem.mp4"></video>
+      <video data-real data-autoplay preload="none" poster="static/videos/real/DrawerItem.jpg" src="static/videos/real/DrawerItem.mp4"></video>
       <div class="meta"><div class="t">DrawerItem <span class="pill">20 / 20 &nbsp;(RGB 7)</span></div><p>Open a drawer, place an item inside and close it: a long-horizon task with occlusion.</p></div>
     </div>
   </div>
@@ -300,6 +307,6 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js" crossorigin="anonymous"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js" crossorigin="anonymous"
   onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false});"></script>
-<script src="static/js/main.js?v=20261025c"></script>
+<script src="static/js/main.js?v=20261025d"></script>
 </body>
 </html>

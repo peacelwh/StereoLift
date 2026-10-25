@@ -195,3 +195,16 @@ footer a { color: var(--ink); }
   .stats { grid-template-columns: 1fr 1fr; }
   :root { --pop: 5px 5px 0 var(--teal); --pop-coral: 5px 5px 0 var(--coral); }
 }
+
+/* real-robot playback speed (1x / 3x, 3x by default) */
+.vwrap { position: relative; }
+.speed { position: absolute; top: 10px; right: 10px; z-index: 3; display: inline-flex; border: 2px solid var(--ink); border-radius: 999px; overflow: hidden; background: var(--card); box-shadow: 2px 2px 0 var(--ink); }
+.speed button, .speedbar .seg button { font: inherit; font-family: var(--font-mono); font-weight: 700; border: 0; background: transparent; color: var(--ink); cursor: pointer; line-height: 1.4; }
+.speed button { font-size: 0.74rem; padding: 2px 9px; }
+.speed button + button, .speedbar .seg button + button { border-left: 2px solid var(--ink); }
+.speed button[aria-pressed="true"], .speedbar .seg button[aria-pressed="true"] { background: var(--teal); color: #fff; }
+.speed button:focus-visible, .speedbar .seg button:focus-visible { outline: 3px solid var(--coral); outline-offset: -3px; }
+.speedbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 4px 0 18px; font-family: var(--font-display); font-weight: 700; font-size: 0.86rem; }
+.speedbar .seg { display: inline-flex; border: 2.5px solid var(--ink); border-radius: 999px; overflow: hidden; background: var(--card); box-shadow: 3px 3px 0 var(--ink); }
+.speedbar .seg button { font-size: 0.86rem; padding: 4px 14px; }
+.speedbar .hint { font-family: var(--font-body); font-weight: 600; margin: 0; }

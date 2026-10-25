@@ -1,5 +1,60 @@
 // StereoLift project page: lazy, muted, looping videos; tabs for the simulation groups; BibTeX copy.
 (function () {
+  // Real-robot clips: selectable 1x / 3x playback, 3x by default. Runs first, before the play-on-scroll observer.
+  const DEFAULT_RATE = 3;
+  const realVideos = Array.from(document.querySelectorAll("video[data-real]"));
+  const allButtons = () => Array.from(document.querySelectorAll("[data-speed-all]"));
+  function setRate(v, r) {
+    v.dataset.rate = String(r);
+    v.defaultPlaybackRate = r; // media loads reset playbackRate to this value
+    v.playbackRate = r;
+    if (v._speedCtl) v._speedCtl.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.rate) === r)));
+  }
+  function syncGlobal() {
+    const rates = new Set(realVideos.map((v) => Number(v.dataset.rate)));
+    allButtons().forEach((b) => b.setAttribute("aria-pressed", String(rates.size === 1 && rates.has(Number(b.dataset.speedAll)))));
+  }
+  realVideos.forEach((v) => {
+    let host = v.parentElement;
+    if (!host.classList.contains("panel")) {
+      const w = document.createElement("div");
+      w.className = "vwrap";
+      v.replaceWith(w);
+      w.appendChild(v);
+      host = w;
+    }
+    const ctl = document.createElement("div");
+    ctl.className = "speed";
+    ctl.setAttribute("role", "group");
+    ctl.setAttribute("aria-label", "Playback speed");
+    [1, 3].forEach((r) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.dataset.rate = String(r);
+      b.textContent = r + "\u00d7";
+      b.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setRate(v, r);
+        syncGlobal();
+      });
+      ctl.appendChild(b);
+    });
+    host.appendChild(ctl);
+    v._speedCtl = ctl;
+    setRate(v, DEFAULT_RATE);
+    const keep = () => { v.playbackRate = Number(v.dataset.rate || DEFAULT_RATE); };
+    v.addEventListener("loadedmetadata", keep);
+    v.addEventListener("play", keep);
+  });
+  allButtons().forEach((b) =>
+    b.addEventListener("click", () => {
+      const r = Number(b.dataset.speedAll);
+      realVideos.forEach((v) => setRate(v, r));
+      syncGlobal();
+    })
+  );
+  syncGlobal();
+
   // Play videos only while they are on screen (saves bandwidth with ~30 clips on the page).
   const videos = Array.from(document.querySelectorAll("video[data-autoplay]"));
   const io = new IntersectionObserver(
