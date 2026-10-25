@@ -39,6 +39,7 @@ def parse_args():
     p.add_argument("--dtype", default="bfloat16")
     p.add_argument("--device", default="cuda")
     p.add_argument("--steps", type=int, default=2)
+    p.add_argument("--save-dir", default=None, help="save the (barely trained) policy + processors here, e.g. to smoke-test evaluation")
     return p.parse_args()
 
 
@@ -92,7 +93,7 @@ def main():
     n_ffs = sum(p.numel() for p in policy.model.ffs.parameters())
     print(f"params: total {n_total / 1e6:.1f}M  trainable {n_train / 1e6:.1f}M  interface {n_adapter / 1e6:.2f}M  ffs (frozen) {n_ffs / 1e6:.2f}M")
 
-    pre, _post = make_pre_post_processors(policy_cfg=cfg, pretrained_path=None, dataset_stats=ds.meta.stats)
+    pre, post = make_pre_post_processors(policy_cfg=cfg, pretrained_path=None, dataset_stats=ds.meta.stats)
     step_ = max(len(ds) // (args.batch + 1), 1)
     items = [ds[i] for i in range(0, step_ * args.batch, step_)][: args.batch]
     batch = {}
@@ -130,6 +131,11 @@ def main():
     conf = policy.last_stereo_confidence
     print(f"inference: actions {tuple(actions.shape)} finite={bool(torch.isfinite(actions).all())} {dt * 1000:.0f} ms for batch {args.batch}; "
           f"mean stereo confidence {conf.mean().item():.3f}")
+    if args.save_dir:
+        policy.save_pretrained(args.save_dir)
+        pre.save_pretrained(args.save_dir)
+        post.save_pretrained(args.save_dir)
+        print("saved policy + processors to", args.save_dir)
     print("OK")
 
 

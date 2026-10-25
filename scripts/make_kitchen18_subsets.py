@@ -33,6 +33,7 @@ def main() -> None:
     spec = json.loads(args.tasks.read_text())
     tasks = spec["tasks"]
     index = spec["task_index"]
+    args.out_dir.mkdir(parents=True, exist_ok=True)
     for demos in (100, 30):
         episodes = []
         for k, t in enumerate(tasks):
