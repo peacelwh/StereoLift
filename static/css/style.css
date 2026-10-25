@@ -114,7 +114,10 @@ section h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15
 .card h4 { margin: 0 0 8px; font-family: var(--font-display); font-size: 1.02rem; display: flex; align-items: center; gap: 8px; }
 .card h4 .k { font-family: var(--font-mono); font-size: 0.78rem; color: #fff; background: var(--ink); padding: 1px 7px; border-radius: 5px; }
 .card p { margin: 0; font-size: 0.95rem; color: var(--muted); }
-.card .eq { font-family: var(--font-mono); font-size: 0.86rem; color: var(--ink); background: var(--paper); border-radius: 8px; padding: 8px 10px; margin: 10px 0 8px; overflow-x: auto; white-space: nowrap; }
+.card .eq { color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 6px 12px; margin: 12px 0 10px; overflow-x: auto; font-size: 0.98rem; }
+.card .eq .katex-display { margin: 0.55em 0; }
+.card .eq .katex { font-size: 1.02em; }
+.card p .katex { font-size: 1em; }
 
 /* tables */
 .tablewrap { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: var(--shadow); }

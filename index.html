@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" crossorigin="anonymous">
 <link rel="stylesheet" href="static/css/style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='12' cy='16' r='9' fill='%230f8b8d'/%3E%3Ccircle cx='20' cy='16' r='9' fill='%23e4572e' fill-opacity='.85'/%3E%3C/svg%3E">
 </head>
@@ -88,20 +89,22 @@
   <div class="cards">
     <div class="card">
       <h4><span class="k">1</span>Stereo belief, not a depth map</h4>
-      <p>For every cell of the quarter-resolution grid the frozen stereo model yields a belief statistic and a confidence that combines posterior entropy, matching sharpness and a left-right consistency check.</p>
-      <div class="eq">b_j = [h_K; &mu;; &sigma;; H; d_K; |d_K &minus; &mu;|; &pi;]&nbsp;&nbsp;&nbsp; c_j = (1 &minus; H/log D_b) &middot; &pi; &middot; (1 &minus; o)</div>
-      <p>Proposition 2: conditioning on the belief never increases the Bayes-optimal flow-matching risk relative to a point estimate derived from it.</p>
+      <p>For every cell \(j\) of the quarter-resolution grid the frozen stereo model yields a belief statistic and a confidence that combines posterior entropy, matching sharpness and a left-right consistency check:</p>
+      <div class="eq">\[ b_j=\big[h_{K,j};\,\mu_j;\,\sigma_j;\,\mathcal{H}_j;\,d_{K,j};\,|d_{K,j}-\mu_j|;\,\pi_j\big] \]
+      \[ c_j=\Big(1-\frac{\mathcal{H}_j}{\log D_b}\Big)\,\pi_j\,(1-o_j) \]</div>
+      <p>Proposition 2: conditioning on the belief \(\mathcal{B}\) never increases the Bayes-optimal flow-matching risk relative to a point estimate \(\widehat{D}=\varphi(\mathcal{B})\) derived from it.</p>
     </div>
     <div class="card">
       <h4><span class="k">2</span>Calibration-free lifting</h4>
-      <p>Cells are lifted with <em>assumed</em> intrinsics (f&prime;, c&prime;) and scale s&prime;, which stay fixed. The policy never receives the true camera parameters.</p>
-      <div class="eq">X&prime; = ( (u &minus; c&prime;_x) s&prime; / (f&prime; d), (v &minus; c&prime;_y) s&prime; / (f&prime; d), s&prime; / d )</div>
-      <p>Proposition 1: for an ideal rectified rig, X&prime; = A X with A a fixed invertible linear map, so relative geometry is preserved exactly.</p>
+      <p>Cells are lifted with <em>assumed</em> intrinsics \((f',c'_x,c'_y)\) and scale \(s'\), which stay fixed. The policy never receives the true camera parameters.</p>
+      <div class="eq">\[ X'_j=\mathcal{L}(u_j,v_j,d_j^{+})=\Big(\frac{(u_j-c'_x)\,s'}{f'\,d_j^{+}},\;\frac{(v_j-c'_y)\,s'}{f'\,d_j^{+}},\;\frac{s'}{d_j^{+}}\Big) \]</div>
+      <p>Proposition 1: for an ideal rectified rig, \(X'=AX\) with \(A\) a fixed invertible linear map, so relative geometry is preserved exactly: \(X'_i-X'_j=A(X_i-X_j)\).</p>
     </div>
     <div class="card">
       <h4><span class="k">3</span>Embedding + relation tokens</h4>
-      <p>Confidence-weighted pooling aligns the belief with the 16&times;16 token grid; a zero-initialized residual adds it to each visual token. Sixteen FiLM-conditioned queries then attend over all native cells, with a penalty &lambda;(1 &minus; c_j) on unreliable ones.</p>
-      <div class="eq">t&#771;_i = t_i + W_o LN( MLP([b&#772;_i; c&#772;_i]) + W_p &phi;(X&#772;&prime;_i) ),&nbsp; W_o &larr; 0</div>
+      <p>Confidence-weighted pooling aligns the belief with the \(16\times16\) token grid and a zero-initialized residual adds it to each visual token. Sixteen FiLM-conditioned queries then attend over all native cells, with a penalty on unreliable ones:</p>
+      <div class="eq">\[ \tilde t_i=t_i+W_o\,\mathrm{LN}\!\big(\mathrm{MLP}([\bar b_i;\bar c_i])+W_p\,\phi(\bar X'_i)\big),\qquad W_o\leftarrow 0 \]
+      \[ \alpha_{mj}=\operatorname{softmax}_j\!\Big(\tfrac{\langle W_q q_m,\,k_j\rangle}{\sqrt{d_k}}-\lambda\,(1-c_j)\Big),\qquad \lambda=4 \]</div>
       <p>Training uses only the flow-matching loss. The interface adds 3.3 M parameters.</p>
     </div>
   </div>
@@ -282,6 +285,9 @@
   </div>
 </footer>
 
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js" crossorigin="anonymous"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false});"></script>
 <script src="static/js/main.js"></script>
 </body>
 </html>
