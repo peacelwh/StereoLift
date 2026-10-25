@@ -104,8 +104,8 @@
       <h4><span class="k">3</span>Embedding + relation tokens</h4>
       <p>Confidence-weighted pooling aligns the belief with the \(16\times16\) token grid and a zero-initialized residual adds it to each visual token. Sixteen FiLM-conditioned queries then attend over all native cells, with a penalty on unreliable ones:</p>
       <div class="eq">\[ \tilde t_i=t_i+W_o\,\mathrm{LN}\!\big(\mathrm{MLP}([\bar b_i;\bar c_i])+W_p\,\phi(\bar X'_i)\big),\qquad W_o\leftarrow 0 \]
-      \[ \alpha_{mj}=\operatorname{softmax}_j\!\Big(\tfrac{\langle W_q q_m,\,k_j\rangle}{\sqrt{d_k}}-\lambda\,(1-c_j)\Big),\qquad \lambda=4 \]</div>
-      <p>Training uses only the flow-matching loss. The interface adds 3.3 M parameters.</p>
+      \[ \alpha_{mj}=\operatorname{softmax}_j\!\Big(\tfrac{\langle W_q q_m,\,k_j\rangle}{\sqrt{d_k}}-\lambda\,(1-c_j)\Big) \]</div>
+      <p>with \(\lambda=4\). Training uses only the flow-matching loss. The interface adds 3.3 M parameters.</p>
     </div>
   </div>
 </section>
