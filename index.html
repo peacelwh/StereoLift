@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StereoLift</title>
+<meta name="description" content="StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting">
+<meta property="og:title" content="StereoLift">
+<meta property="og:description" content="A calibration-free stereo interface for pretrained VLA models: geometric token embedding and relation tokens over the disparity belief of a frozen stereo foundation model.">
+<meta property="og:image" content="static/images/teaser.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='12' cy='16' r='9' fill='%230f8b8d'/%3E%3Ccircle cx='20' cy='16' r='9' fill='%23e4572e' fill-opacity='.85'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <a class="brand" href="#top"><span class="eye l"></span><span class="eye r"></span>StereoLift</a>
+  <nav class="topnav">
+    <a href="#abstract">Abstract</a><a href="#method">Method</a><a href="#real">Humanoid</a><a href="#sim">RoboCasa365</a><a href="#results">Results</a><a href="#citation">BibTeX</a>
+  </nav>
+</div></div>
+
+<header class="hero wrap" id="top">
+  <h1><span class="stereo">Stereo</span><span class="lift">Lift</span></h1>
+  <p class="subtitle">Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting</p>
+  <div class="authors">
+    <span>Wenhao Li<sup>1,2</sup></span>
+    <span>Zhongyi Han<sup>1</sup></span>
+    <span>Changfeng Sun<sup>3</sup></span>
+    <span>Liang Han<sup>3</sup></span>
+    <span>Yilong Yin<sup>1,&#8224;</sup></span>
+    <span>Liqiang Nie<sup>3</sup></span>
+  </div>
+  <div class="affil">
+    <span><sup>1</sup>School of Software, Shandong University</span>
+    <span><sup>2</sup>Shenzhen Loop Area Institute</span>
+    <span><sup>3</sup>School of Computer Science and Technology, Harbin Institute of Technology (Shenzhen)</span>
+    <span><sup>&#8224;</sup>Corresponding author</span>
+  </div>
+  <div class="links">
+    <span class="btn disabled" title="The paper is under review; the link will be added on publication."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>Paper (coming soon)</span>
+    <a class="btn" href="https://github.com/peacelwh/StereoLift" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A12 12 0 0 0 0 12.6a12.1 12.1 0 0 0 8.2 11.5c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.3 1.8 1.3 1.1 1.9 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.4-5.5-6a4.7 4.7 0 0 1 1.2-3.3 4.4 4.4 0 0 1 .1-3.2s1-.3 3.3 1.2a11.3 11.3 0 0 1 6 0c2.3-1.6 3.3-1.2 3.3-1.2a4.4 4.4 0 0 1 .1 3.2 4.7 4.7 0 0 1 1.2 3.3c0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12.1 12.1 0 0 0 24 12.6 12 12 0 0 0 12 .5z"/></svg>Code</a>
+    <a class="btn" href="https://huggingface.co/datasets/Bluexxx/robocasa365_kitchen18" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>Kitchen-18 Dataset</a>
+    <a class="btn" href="#citation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 17h3l2-4V7H5v6h3zM14 17h3l2-4V7h-6v6h3z"/></svg>BibTeX</a>
+  </div>
+
+  <div class="pair">
+    <div class="panel l">
+      <span class="tag">LEFT &middot; humanoid, two dexterous hands</span>
+      <video data-autoplay preload="metadata" poster="static/videos/real/InsertRing.jpg" src="static/videos/real/InsertRing.mp4"></video>
+      <div class="cap"><span><b>InsertRing</b> on the Unitree G1-D with BrainCo hands</span><span>640&times;480 head stereo pair, B/Z &asymp; 0.15</span></div>
+    </div>
+    <div class="panel r">
+      <span class="tag">RIGHT &middot; RoboCasa365</span>
+      <video data-autoplay preload="metadata" poster="static/videos/sim/atomic_seen/PickPlaceSinkToCounter.jpg" src="static/videos/sim/atomic_seen/PickPlaceSinkToCounter.mp4"></video>
+      <div class="cap"><span><b>PickPlaceSinkToCounter</b>, a StereoLift rollout</span><span>256&times;256 agentview pair, B/Z = 0.70</span></div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat teal"><div class="n">16.9<small>&rarr;</small>35.2</div><div class="d">RoboCasa365 Target50 success (%), published pi0.5 &rarr; StereoLift</div></div>
+    <div class="stat coral"><div class="n">33.3<small>&rarr;</small>81.7</div><div class="d">Humanoid average success (%) over six dexterous tasks, RGB &rarr; StereoLift</div></div>
+    <div class="stat teal"><div class="n">60.3<small>vs</small>46.6</div><div class="d">Kitchen-18 success (%), StereoLift vs monocular RGB under one recipe</div></div>
+    <div class="stat coral"><div class="n">+31.4<small>ms</small></div><div class="d">Overhead per 50-step action chunk, the lowest among the geometry-conditioned designs</div></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="abstract">
+  <h2><span class="num">01</span>Abstract</h2>
+  <p class="lead">Vision-language-action (VLA) models inherit rich semantics from large-scale pretraining but capture limited metric geometry from monocular images, hindering precise and contact-rich manipulation. Existing approaches inject geometry through depth maps, point clouds, or auxiliary 3D objectives. However, they typically require camera calibration, discard depth uncertainty, or modify the pretrained backbone. To address these limitations, we propose <b>StereoLift</b>, a calibration-free framework that conditions a pretrained VLA on the disparity belief of a real-time zero-shot stereo foundation model. First, a <b>geometric token embedding</b> lifts each visual token into an affine-equivalent 3D frame using assumed intrinsics. A single zero-initialized projection injects the lifted coordinate and belief into the token. Second, language-conditioned <b>relation tokens</b> read hand-object relations at native disparity precision. We prove that lifting preserves geometry up to a fixed linear map and show that belief conditioning never increases flow-matching risk relative to point estimates. Experiments on RoboCasa365 show that StereoLift sets a new state of the art, raising the success rate of the base VLA from 16.9% to 35.2% and outperforming four conditioning designs under one training recipe. Notably, on a humanoid with two dexterous hands, StereoLift raises average success from 33.3% to 81.7% while remaining robust to depth shifts.</p>
+  <figure class="figure" style="margin:22px 0 0">
+    <img src="static/images/teaser.png" alt="Overview of StereoLift: existing geometry conditioning, the StereoLift interface, and the performance comparisons">
+    <figcaption>(a) Existing methods incorporate geometry through cost volumes, learned correspondence, or depth point estimates. (b) StereoLift combines calibration-free belief lifting with task-conditioned relation tokens to enhance pretrained VLAs for precise manipulation. (c) Performance on RoboCasa365, Kitchen-18 and humanoid manipulation, including robustness to depth shifts.</figcaption>
+  </figure>
+</section>
+
+<section id="method">
+  <h2><span class="num">02</span>Method</h2>
+  <p class="lead">At each control step the policy receives a rectified stereo pair, a language instruction and the proprioceptive state, and predicts a 50-step action chunk. StereoLift builds on pi0.5 and introduces two components between its visual encoder and its vision-language backbone. The backbone, the action parameterization and the flow-matching objective are preserved; no auxiliary geometric supervision, depth labels or camera-parameter targets are used.</p>
+  <figure class="figure" style="margin-top:18px">
+    <img src="static/images/architecture.png" alt="Overall framework of StereoLift">
+    <figcaption>A frozen Fast-FoundationStereo model provides disparity belief features. The geometric embedding lifts coordinates with assumed intrinsics and injects confidence-weighted geometry and belief features into the 256 SigLIP tokens through a zero-initialized projection. Language- and state-conditioned queries read fine spatial relations at the belief map's native resolution and are appended as 16 relation tokens. PaliGemma and the flow-matching action expert are unchanged.</figcaption>
+  </figure>
+  <div class="cards">
+    <div class="card">
+      <h4><span class="k">1</span>Stereo belief, not a depth map</h4>
+      <p>For every cell of the quarter-resolution grid the frozen stereo model yields a belief statistic and a confidence that combines posterior entropy, matching sharpness and a left-right consistency check.</p>
+      <div class="eq">b_j = [h_K; &mu;; &sigma;; H; d_K; |d_K &minus; &mu;|; &pi;]&nbsp;&nbsp;&nbsp; c_j = (1 &minus; H/log D_b) &middot; &pi; &middot; (1 &minus; o)</div>
+      <p>Proposition 2: conditioning on the belief never increases the Bayes-optimal flow-matching risk relative to a point estimate derived from it.</p>
+    </div>
+    <div class="card">
+      <h4><span class="k">2</span>Calibration-free lifting</h4>
+      <p>Cells are lifted with <em>assumed</em> intrinsics (f&prime;, c&prime;) and scale s&prime;, which stay fixed. The policy never receives the true camera parameters.</p>
+      <div class="eq">X&prime; = ( (u &minus; c&prime;_x) s&prime; / (f&prime; d), (v &minus; c&prime;_y) s&prime; / (f&prime; d), s&prime; / d )</div>
+      <p>Proposition 1: for an ideal rectified rig, X&prime; = A X with A a fixed invertible linear map, so relative geometry is preserved exactly.</p>
+    </div>
+    <div class="card">
+      <h4><span class="k">3</span>Embedding + relation tokens</h4>
+      <p>Confidence-weighted pooling aligns the belief with the 16&times;16 token grid; a zero-initialized residual adds it to each visual token. Sixteen FiLM-conditioned queries then attend over all native cells, with a penalty &lambda;(1 &minus; c_j) on unreliable ones.</p>
+      <div class="eq">t&#771;_i = t_i + W_o LN( MLP([b&#772;_i; c&#772;_i]) + W_p &phi;(X&#772;&prime;_i) ),&nbsp; W_o &larr; 0</div>
+      <p>Training uses only the flow-matching loss. The interface adds 3.3 M parameters.</p>
+    </div>
+  </div>
+</section>
+
+<section id="real">
+  <h2><span class="num">03</span>Humanoid with two dexterous hands</h2>
+  <p class="lead">Six tasks on a Unitree G1-D humanoid with two BrainCo 6-DoF hands (26-dimensional actions): precise alignment, three-cup stacking, cap removal, bimanual assembly and handover, and long-horizon manipulation with occlusion. The head-mounted 640&times;480 stereo pair is used without calibration; the only correction is a constant vertical offset of &minus;4.15 pixels estimated from the data. Each policy is trained from 100 demonstrations and evaluated over 20 trials per task. Successes out of 20 are given for StereoLift and for the monocular pi0.5 baseline trained with the same configuration.</p>
+  <div class="grid real">
+    <div class="vcard">
+      <video data-autoplay preload="none" poster="static/videos/real/InsertRing.jpg" src="static/videos/real/InsertRing.mp4"></video>
+      <div class="meta"><div class="t">InsertRing <span class="pill">16 / 20 &nbsp;(RGB 8)</span></div><p>Insert two rings onto a vertical pillar with about 3 mm of clearance, the first with the right hand and the second with the left hand.</p></div>
+    </div>
+    <div class="vcard">
+      <video data-autoplay preload="none" poster="static/videos/real/StackCup.jpg" src="static/videos/real/StackCup.mp4"></video>
+      <div class="meta"><div class="t">StackCup <span class="pill">15 / 20 &nbsp;(RGB 9)</span></div><p>Stack three inverted paper cups into a pyramid, two at the bottom and one on top, with both hands.</p></div>
+    </div>
+    <div class="vcard">
+      <video data-autoplay preload="none" poster="static/videos/real/RemoveCap.jpg" src="static/videos/real/RemoveCap.mp4"></video>
+      <div class="meta"><div class="t">RemoveCap <span class="pill">19 / 20 &nbsp;(RGB 7)</span></div><p>Unscrew a black cap from a green bottle held by the other hand.</p></div>
+    </div>
+    <div class="vcard">
+      <video data-autoplay preload="none" poster="static/videos/real/BuildBlocks.jpg" src="static/videos/real/BuildBlocks.mp4"></video>
+      <div class="meta"><div class="t">BuildBlocks <span class="pill bi">8 / 20 &nbsp;(RGB 0)</span></div><p>Bimanual: one hand lifts a base brick and holds it while the other hand plugs three blocks into it.</p></div>
+    </div>
+    <div class="vcard">
+      <video data-autoplay preload="none" poster="static/videos/real/HandoverBanana.jpg" src="static/videos/real/HandoverBanana.mp4"></video>
+      <div class="meta"><div class="t">HandoverBanana <span class="pill bi">20 / 20 &nbsp;(RGB 9)</span></div><p>Bimanual: pick the banana with one hand, hand it over to the other hand, and place it.</p></div>
+    </div>
+    <div class="vcard">
+      <video data-autoplay preload="none" poster="static/videos/real/DrawerItem.jpg" src="static/videos/real/DrawerItem.mp4"></video>
+      <div class="meta"><div class="t">DrawerItem <span class="pill">20 / 20 &nbsp;(RGB 7)</span></div><p>Open a drawer, place an item inside and close it: a long-horizon task with occlusion.</p></div>
+    </div>
+  </div>
+  <figure class="figure" style="margin-top:22px">
+    <img src="static/images/real_analysis.png" alt="Real-robot analysis: perturbations, stage-wise success and failure prediction">
+    <figcaption>(a) Success under target depth shifts of &plusmn;20 cm, head tilts of &plusmn;5&deg; and one-second occlusion of one lens, averaged over the six tasks: StereoLift keeps 61.7% under depth shifts against 26.7% for monocular pi0.5. (b) Stage-wise success on the three precision tasks. (c) The mean stereo confidence of the first action chunk after the approach separates successful from failed trials (AUROC 0.84) and serves as an early-stop criterion before contact.</figcaption>
+  </figure>
+</section>
+
+<section id="sim">
+  <h2><span class="num">04</span>RoboCasa365 rollouts</h2>
+  <p class="lead">Successful StereoLift rollouts under the official Target50 protocol (trained on the 300-task Human300 set, evaluated on 50 target tasks in three groups), seen from the left agentview camera. Click a clip to pause it.</p>
+  <div data-tabs>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-controls="tab-atomic" aria-selected="true">Atomic seen<span class="c">12 clips</span></button>
+      <button class="tab" role="tab" aria-controls="tab-cseen" aria-selected="false">Composite seen<span class="c">7 clips</span></button>
+      <button class="tab" role="tab" aria-controls="tab-cunseen" aria-selected="false">Composite unseen<span class="c">5 clips</span></button>
+    </div>
+    <div id="tab-atomic" class="tabpanel grid sim" role="tabpanel">
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/CloseFridge.jpg" src="static/videos/sim/atomic_seen/CloseFridge.mp4"></video><div class="meta"><div class="t">CloseFridge</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/OpenDrawer.jpg" src="static/videos/sim/atomic_seen/OpenDrawer.mp4"></video><div class="meta"><div class="t">OpenDrawer</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/OpenStandMixerHead.jpg" src="static/videos/sim/atomic_seen/OpenStandMixerHead.mp4"></video><div class="meta"><div class="t">OpenStandMixerHead</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/PickPlaceSinkToCounter.jpg" src="static/videos/sim/atomic_seen/PickPlaceSinkToCounter.mp4"></video><div class="meta"><div class="t">PickPlaceSinkToCounter</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/SlideDishwasherRack.jpg" src="static/videos/sim/atomic_seen/SlideDishwasherRack.mp4"></video><div class="meta"><div class="t">SlideDishwasherRack</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/PickPlaceToasterToCounter.jpg" src="static/videos/sim/atomic_seen/PickPlaceToasterToCounter.mp4"></video><div class="meta"><div class="t">PickPlaceToasterToCounter</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/CloseToasterOvenDoor.jpg" src="static/videos/sim/atomic_seen/CloseToasterOvenDoor.mp4"></video><div class="meta"><div class="t">CloseToasterOvenDoor</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/PickPlaceCounterToCabinet.jpg" src="static/videos/sim/atomic_seen/PickPlaceCounterToCabinet.mp4"></video><div class="meta"><div class="t">PickPlaceCounterToCabinet</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/PickPlaceDrawerToCounter.jpg" src="static/videos/sim/atomic_seen/PickPlaceDrawerToCounter.mp4"></video><div class="meta"><div class="t">PickPlaceDrawerToCounter</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/CoffeeSetupMug.jpg" src="static/videos/sim/atomic_seen/CoffeeSetupMug.mp4"></video><div class="meta"><div class="t">CoffeeSetupMug</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/OpenCabinet.jpg" src="static/videos/sim/atomic_seen/OpenCabinet.mp4"></video><div class="meta"><div class="t">OpenCabinet</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/atomic_seen/TurnOnSinkFaucet.jpg" src="static/videos/sim/atomic_seen/TurnOnSinkFaucet.mp4"></video><div class="meta"><div class="t">TurnOnSinkFaucet</div></div></div>
+    </div>
+    <div id="tab-cseen" class="tabpanel grid sim" role="tabpanel" hidden>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_seen/LoadDishwasher.jpg" src="static/videos/sim/composite_seen/LoadDishwasher.mp4"></video><div class="meta"><div class="t">LoadDishwasher</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_seen/WashLettuce.jpg" src="static/videos/sim/composite_seen/WashLettuce.mp4"></video><div class="meta"><div class="t">WashLettuce</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_seen/SetUpCuttingStation.jpg" src="static/videos/sim/composite_seen/SetUpCuttingStation.mp4"></video><div class="meta"><div class="t">SetUpCuttingStation</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_seen/RinseSinkBasin.jpg" src="static/videos/sim/composite_seen/RinseSinkBasin.mp4"></video><div class="meta"><div class="t">RinseSinkBasin</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_seen/StackBowlsCabinet.jpg" src="static/videos/sim/composite_seen/StackBowlsCabinet.mp4"></video><div class="meta"><div class="t">StackBowlsCabinet</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_seen/PreSoakPan.jpg" src="static/videos/sim/composite_seen/PreSoakPan.mp4"></video><div class="meta"><div class="t">PreSoakPan</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_seen/ScrubCuttingBoard.jpg" src="static/videos/sim/composite_seen/ScrubCuttingBoard.mp4"></video><div class="meta"><div class="t">ScrubCuttingBoard</div></div></div>
+    </div>
+    <div id="tab-cunseen" class="tabpanel grid sim" role="tabpanel" hidden>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_unseen/BreadSelection.jpg" src="static/videos/sim/composite_unseen/BreadSelection.mp4"></video><div class="meta"><div class="t">BreadSelection</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_unseen/ArrangeTea.jpg" src="static/videos/sim/composite_unseen/ArrangeTea.mp4"></video><div class="meta"><div class="t">ArrangeTea</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_unseen/WashFruitColander.jpg" src="static/videos/sim/composite_unseen/WashFruitColander.mp4"></video><div class="meta"><div class="t">WashFruitColander</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_unseen/CuttingToolSelection.jpg" src="static/videos/sim/composite_unseen/CuttingToolSelection.mp4"></video><div class="meta"><div class="t">CuttingToolSelection</div></div></div>
+      <div class="vcard"><video data-autoplay preload="none" poster="static/videos/sim/composite_unseen/GarnishPancake.jpg" src="static/videos/sim/composite_unseen/GarnishPancake.mp4"></video><div class="meta"><div class="t">GarnishPancake</div></div></div>
+    </div>
+  </div>
+  <figure class="figure" style="margin-top:22px">
+    <img src="static/images/qual_attn.png" alt="Relation-token attention of a trained policy">
+    <figcaption>RoboCasa frames processed by a trained Kitchen-18 policy: rectified left and right views, Fast-FoundationStereo disparity and confidence, and the attention of the relation tokens, which concentrates on the gripper and on the object named by the instruction.</figcaption>
+  </figure>
+</section>
+
+<section id="results">
+  <h2><span class="num">05</span>Results</h2>
+  <h3>RoboCasa365 Target50 (official protocol)</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Method</th><th>Atomic seen</th><th>Composite seen</th><th>Composite unseen</th><th>Overall</th></tr></thead>
+    <tbody>
+      <tr><td>pi0.5 (RGB, published)</td><td>39.6</td><td>7.1</td><td>1.2</td><td>16.9</td></tr>
+      <tr><td>Multi-view</td><td>56.4</td><td>24.4</td><td>10.0</td><td>31.7</td></tr>
+      <tr><td>RGB-D</td><td>55.9</td><td>23.0</td><td>8.1</td><td>30.5</td></tr>
+      <tr><td>StereoVLA</td><td>50.3</td><td>28.1</td><td>7.7</td><td>30.0</td></tr>
+      <tr><td>StereoPolicy</td><td>56.8</td><td>26.4</td><td>10.9</td><td>32.8</td></tr>
+      <tr class="ours"><td>StereoLift (ours)</td><td>60.3</td><td>29.4</td><td>11.3</td><td>35.2</td></tr>
+    </tbody>
+  </table></div>
+  <p class="tabnote">Success rates (%) with Human300 training and 50 rollouts per task. Except for the published pi0.5 result, all methods are trained in our codebase using the same recipe.</p>
+
+  <div class="tables" style="margin-top:22px">
+    <div>
+      <h3 style="margin-top:0">Kitchen-18: conditioning designs and data efficiency</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Method</th><th>Representation</th><th>100 demos</th><th>PnP</th><th>30 demos</th></tr></thead>
+        <tbody>
+          <tr><td>RGB (pi0.5)</td><td>none</td><td>46.6 &plusmn; 3.4</td><td>46.0</td><td>50.8</td></tr>
+          <tr><td>Multi-view</td><td>second-view tokens</td><td>50.8 &plusmn; 5.2</td><td>69.0</td><td>43.1</td></tr>
+          <tr><td>RGB-D</td><td>disparity channel</td><td>50.8 &plusmn; 5.8</td><td>64.4</td><td>44.8</td></tr>
+          <tr><td>StereoVLA</td><td>pooled cost volume</td><td>51.1 &plusmn; 5.6</td><td>46.0</td><td>39.3</td></tr>
+          <tr><td>StereoPolicy</td><td>cross-view attention</td><td>47.8 &plusmn; 5.0</td><td>46.0</td><td>50.2</td></tr>
+          <tr class="ours"><td>StereoLift (ours)</td><td>belief embedding + relation tokens</td><td>60.3 &plusmn; 5.4</td><td>73.6</td><td>56.2</td></tr>
+        </tbody>
+      </table></div>
+      <p class="tabnote">Success rates (%) with 50 rollouts per task; task mean &plusmn; standard error over 18 tasks; PnP is the mean over the five pick-and-place tasks. All methods share the backbone, data, rectification and training configuration within each demonstration budget.</p>
+    </div>
+    <div>
+      <h3 style="margin-top:0">Ablations (30 demonstrations per task)</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Variant</th><th>Component assessed</th><th>Success</th><th>&Delta;</th></tr></thead>
+        <tbody>
+          <tr class="ours"><td>A: full model</td><td>&mdash;</td><td>56.2</td><td>0.0</td></tr>
+          <tr><td>B: without relation tokens</td><td>native-resolution reading</td><td>52.1</td><td>&minus;4.1</td></tr>
+          <tr><td>C: without geometric embedding</td><td>per-token spatial context</td><td>50.0</td><td>&minus;6.2</td></tr>
+          <tr><td>D: point estimate instead of belief</td><td>information beyond d_K</td><td>51.8</td><td>&minus;4.4</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Latency per 50-step action chunk</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th></th><th>RGB</th><th>Multi-view</th><th>RGB-D</th><th>StereoVLA</th><th>StereoPolicy</th><th>StereoLift</th></tr></thead>
+        <tbody>
+          <tr><td>Latency (ms)</td><td>254.1</td><td>286.4</td><td>314.4</td><td>330.3</td><td>322.8</td><td><b>285.5</b></td></tr>
+          <tr><td>Overhead (ms)</td><td>&ndash;</td><td>32.3</td><td>60.3</td><td>76.2</td><td>68.7</td><td><b>31.4</b></td></tr>
+        </tbody>
+      </table></div>
+      <p class="tabnote">Median latency on an A800 GPU, batch size 1, 256&times;256 inputs, K = 4 refinement iterations, 10 flow-matching steps.</p>
+    </div>
+  </div>
+
+  <h3>Humanoid: successes out of 20 trials</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Method</th><th>InsertRing</th><th>StackCup</th><th>RemoveCap</th><th>BuildBlocks&#8224;</th><th>Handover&#8224;</th><th>DrawerItem</th><th>Average (%)</th></tr></thead>
+    <tbody>
+      <tr><td>pi0.5 (RGB)</td><td>8</td><td>9</td><td>7</td><td>0</td><td>9</td><td>7</td><td>33.3</td></tr>
+      <tr><td>RGB-D (FFS disparity)</td><td>10</td><td>11</td><td>9</td><td>2</td><td>11</td><td>9</td><td>43.3</td></tr>
+      <tr><td>StereoVLA</td><td>12</td><td>11</td><td>10</td><td>1</td><td>16</td><td>17</td><td>55.8</td></tr>
+      <tr><td>StereoPolicy</td><td>11</td><td>10</td><td>9</td><td>2</td><td>15</td><td>15</td><td>51.7</td></tr>
+      <tr class="ours"><td>StereoLift (ours)</td><td>16</td><td>15</td><td>19</td><td>8</td><td>20</td><td>20</td><td>81.7</td></tr>
+    </tbody>
+  </table></div>
+  <p class="tabnote">&#8224; bimanual tasks. All policies are fine-tuned from pi0.5 using the same training configuration.</p>
+
+  <h3>Robustness to the rig and anytime refinement</h3>
+  <figure class="figure">
+    <img src="static/images/robustness.png" alt="Robustness and anytime refinement on the six-task Kitchen-18 subset">
+    <figcaption>Six-task Kitchen-18 subset, 20 rollouts per task, policies trained at the nominal pose. (a) Success under test-time rotations and translations of the stereo pair: across yaw perturbations StereoLift averages 54.9% against 40.1% for monocular RGB. (b) Success as the baseline is scaled at test time. (c) Success against the number of refinement iterations K: two iterations already match the default K = 4.</figcaption>
+  </figure>
+</section>
+
+<section id="citation">
+  <h2><span class="num">06</span>Citation</h2>
+  <pre class="bib" id="bibtex"><button class="copy" id="copy-bib" type="button">Copy</button>@misc{li2026stereolift,
+  title  = {StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting},
+  author = {Li, Wenhao and Han, Zhongyi and Sun, Changfeng and Han, Liang and Yin, Yilong and Nie, Liqiang},
+  year   = {2026},
+  howpublished = {\url{https://github.com/peacelwh/StereoLift}}
+}</pre>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    StereoLift builds on <a href="https://github.com/huggingface/lerobot" target="_blank" rel="noopener">LeRobot</a> and pi0.5, <a href="https://github.com/NVlabs/Fast-FoundationStereo" target="_blank" rel="noopener">Fast-FoundationStereo</a> and the <a href="https://robocasa.ai" target="_blank" rel="noopener">RoboCasa365</a> benchmark.<br>
+    Page layout inspired by the <a href="https://annchenn.github.io/Manga2Animate/" target="_blank" rel="noopener">Manga2Animate</a> project page. Code released under the MIT license.
+  </div>
+</footer>
+
+<script src="static/js/main.js"></script>
+</body>
+</html>
