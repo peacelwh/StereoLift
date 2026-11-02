@@ -88,7 +88,7 @@ non-commercial research. Please cite RoboCasa365 and, if you use this subset or 
 ```bibtex
 @misc{li2026stereolift,
   title  = {StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting},
-  author = {Li, Wenhao and Han, Zhongyi and Sun, Changfeng and Han, Liang and Yin, Yilong and Nie, Liqiang},
+  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Qin, Zheyun and Yin, Yilong},
   year   = {2026},
   howpublished = {\url{https://github.com/peacelwh/StereoLift}}
 }

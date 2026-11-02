@@ -6,21 +6,21 @@ authors:
   - family-names: Li
     given-names: Wenhao
     affiliation: "School of Software, Shandong University; Shenzhen Loop Area Institute"
+  - family-names: Liang
+    given-names: Xusheng
+    affiliation: "Shenzhen Loop Area Institute; City University of Hong Kong"
+  - family-names: Shi
+    given-names: Yang
+    affiliation: "School of Artificial Intelligence, Shandong University"
   - family-names: Han
     given-names: Zhongyi
     affiliation: "School of Software, Shandong University"
-  - family-names: Sun
-    given-names: Changfeng
-    affiliation: "School of Computer Science and Technology, Harbin Institute of Technology (Shenzhen)"
-  - family-names: Han
-    given-names: Liang
-    affiliation: "School of Computer Science and Technology, Harbin Institute of Technology (Shenzhen)"
+  - family-names: Qin
+    given-names: Zheyun
+    affiliation: "School of Software, Shandong University"
   - family-names: Yin
     given-names: Yilong
     affiliation: "School of Software, Shandong University"
-  - family-names: Nie
-    given-names: Liqiang
-    affiliation: "School of Computer Science and Technology, Harbin Institute of Technology (Shenzhen)"
 repository-code: "https://github.com/peacelwh/StereoLift"
 url: "https://peacelwh.github.io/StereoLift/"
 license: MIT
@@ -36,15 +36,15 @@ preferred-citation:
   authors:
     - family-names: Li
       given-names: Wenhao
+    - family-names: Liang
+      given-names: Xusheng
+    - family-names: Shi
+      given-names: Yang
     - family-names: Han
       given-names: Zhongyi
-    - family-names: Sun
-      given-names: Changfeng
-    - family-names: Han
-      given-names: Liang
+    - family-names: Qin
+      given-names: Zheyun
     - family-names: Yin
       given-names: Yilong
-    - family-names: Nie
-      given-names: Liqiang
   year: 2026
   url: "https://github.com/peacelwh/StereoLift"

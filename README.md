@@ -4,14 +4,14 @@
 <div>
 <div>
     Wenhao Li<sup>1,2</sup>,
+    Xusheng Liang<sup>2,3</sup>,
+    Yang Shi<sup>4</sup>,
     Zhongyi Han<sup>1</sup>,
-    Changfeng Sun<sup>3</sup>,
-    Liang Han<sup>3</sup>,
-    Yilong Yin<sup>1*</sup>,
-    Liqiang Nie<sup>3</sup>
+    Zheyun Qin<sup>1</sup>,
+    Yilong Yin<sup>1*</sup>
 </div>
 
-<sup>1</sup>School of Software, Shandong University &nbsp; <sup>2</sup>Shenzhen Loop Area Institute &nbsp; <sup>3</sup>School of Computer Science and Technology, Harbin Institute of Technology (Shenzhen)<br>
+<sup>1</sup>School of Software, Shandong University &nbsp; <sup>2</sup>Shenzhen Loop Area Institute &nbsp; <sup>3</sup>City University of Hong Kong &nbsp; <sup>4</sup>School of Artificial Intelligence, Shandong University<br>
 *Corresponding author
 
 [![project page](https://img.shields.io/badge/Project-StereoLift-9cf)](https://peacelwh.github.io/StereoLift/)
@@ -236,7 +236,7 @@ If you find this work useful for your research, please kindly cite our paper.
 ```bibtex
 @misc{li2026stereolift,
   title  = {StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting},
-  author = {Li, Wenhao and Han, Zhongyi and Sun, Changfeng and Han, Liang and Yin, Yilong and Nie, Liqiang},
+  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Qin, Zheyun and Yin, Yilong},
   year   = {2026},
   howpublished = {\url{https://github.com/peacelwh/StereoLift}}
 }
