@@ -177,11 +177,11 @@ configuration within each demonstration budget.
 
 | Method | Conditioning representation | 100 demos | PnP | 30 demos |
 |---|---|:-:|:-:|:-:|
-| RGB | none | 46.6 ± 3.4 | 46.0 | 50.8 |
+| RGB | none | 46.6 ± 3.4 | 46.0 | 40.8 |
 | Multi-view | second-view tokens | 50.8 ± 5.2 | 69.0 | 43.1 |
 | RGB-D | disparity channel | 50.8 ± 5.8 | 64.4 | 44.8 |
 | StereoVLA | pooled cost volume | 51.1 ± 5.6 | 46.0 | 39.3 |
-| StereoPolicy | cross-view attention | 47.8 ± 5.0 | 46.0 | 50.2 |
+| StereoPolicy | cross-view attention | 47.8 ± 5.0 | 46.0 | 40.2 |
 | **StereoLift (ours)** | belief embedding + relation tokens | **60.3 ± 5.4** | **73.6** | **56.2** |
 
 **Ablations** on Kitchen-18 with 30 demonstrations per task (success %, change in points relative to the full model).
