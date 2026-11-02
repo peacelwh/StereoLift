@@ -89,7 +89,7 @@
 
 <section id="abstract">
   <h2><span class="num">01</span>Abstract</h2>
-  <div class="box"><p class="lead" style="margin:0">Vision-language-action (VLA) models inherit rich semantics from large-scale pretraining but capture limited metric geometry from monocular images, hindering precise and contact-rich manipulation. Existing approaches inject geometry through depth maps, point clouds, or auxiliary 3D objectives. However, they typically require camera calibration, discard depth uncertainty, or modify the pretrained backbone. To address these limitations, we propose <b>StereoLift</b>, a calibration-free framework that conditions a pretrained VLA on the disparity belief of a real-time zero-shot stereo foundation model. First, a <b>geometric token embedding</b> lifts each visual token into an affine-equivalent 3D frame using assumed intrinsics. A single zero-initialized projection injects the lifted coordinate and belief into the token. Second, language-conditioned <b>relation tokens</b> read hand-object relations at native disparity precision. We prove that lifting preserves geometry up to a fixed linear map and show that belief conditioning never increases flow-matching risk relative to point estimates. Experiments on RoboCasa365 show that, under a unified backbone and training setup, StereoLift achieves the highest success rate among the compared stereo conditioning methods and raises that of the base VLA from 16.9% to 34.5%. Notably, on a humanoid with two dexterous hands, StereoLift raises average success from 33.3% to 81.7% while remaining robust to depth shifts.</p></div>
+  <div class="box"><p class="lead" style="margin:0">Vision-language-action (VLA) models inherit rich semantics from large-scale pretraining but capture limited metric geometry from monocular images, hindering precise and contact-rich manipulation. Existing approaches inject geometry through depth maps, point clouds, or auxiliary 3D objectives, but typically require camera calibration, discard depth uncertainty, or modify the pretrained backbone. To address these limitations, we propose <b>StereoLift</b>, a calibration-free framework that conditions a pretrained VLA on the disparity belief of a real-time zero-shot stereo foundation model. First, a <b>geometric token embedding</b> lifts each visual token into an affine-equivalent 3D frame using assumed intrinsics. A single zero-initialized projection injects the lifted coordinate and belief into the token. Second, language-conditioned <b>relation tokens</b> read hand-object relations at native disparity precision. We prove that lifting preserves geometry up to a fixed linear map and show that belief conditioning never increases flow-matching risk relative to point estimates. On RoboCasa365, under a unified backbone and training setup, StereoLift achieves the highest success rate among the compared stereo conditioning methods and raises that of the base VLA from 16.9% to 34.5%. On a humanoid with two dexterous hands, StereoLift raises average success from 33.3% to 81.7% while remaining robust to depth shifts.</p></div>
   <figure class="figure" style="margin:22px 0 0">
     <img src="static/images/teaser.png" alt="Overview of StereoLift: existing geometry conditioning, the StereoLift interface, and the performance comparisons">
     <figcaption>(a) Existing methods incorporate geometry through cost volumes, learned correspondence, or depth point estimates. (b) StereoLift combines calibration-free belief lifting with task-conditioned relation tokens to enhance pretrained VLAs for precise manipulation. (c) Performance on RoboCasa365, Kitchen-18 and humanoid manipulation, including robustness to depth shifts.</figcaption>
@@ -217,54 +217,53 @@
   <div class="tablewrap"><table>
     <thead><tr><th>Method</th><th>Atomic seen</th><th>Composite seen</th><th>Composite unseen</th><th>Overall</th></tr></thead>
     <tbody>
-      <tr><td>RGB (published pi0.5)</td><td>39.6</td><td>7.1</td><td>1.2</td><td>16.9</td></tr>
+      <tr><td>RGB</td><td>39.6</td><td>7.1</td><td>1.2</td><td>16.9</td></tr>
       <tr><td>Multi-view</td><td>56.4</td><td>24.4</td><td>9.4</td><td>31.1</td></tr>
       <tr><td>RGB-D</td><td>55.9</td><td>23.0</td><td>7.6</td><td>29.9</td></tr>
+      <tr><td>RGBD-3DDA</td><td>56.6</td><td>24.4</td><td>8.6</td><td>30.9</td></tr>
+      <tr><td>PCD-DP3</td><td>54.0</td><td>23.9</td><td>7.6</td><td>29.5</td></tr>
       <tr><td>StereoVLA</td><td>50.3</td><td>28.1</td><td>7.2</td><td>29.4</td></tr>
       <tr><td>StereoPolicy</td><td>56.8</td><td>26.4</td><td>10.2</td><td>32.2</td></tr>
       <tr class="ours"><td>StereoLift (ours)</td><td>60.3</td><td>29.4</td><td>10.6</td><td>34.5</td></tr>
     </tbody>
   </table></div>
-  <p class="tabnote">Success rates (%) with Human300 training and 50 rollouts per task. Except for the published pi0.5 result, all methods are trained in our codebase using the same recipe.</p>
+  <p class="tabnote">Success rates (%) under the official protocol, with Human300 training and 50 rollouts per task. All results are obtained with our shared experimental pipeline. The RGB baseline is our reproduction of pi0.5, consistent with the published result (16.9%).</p>
 
-  <div class="tables" style="margin-top:22px">
-    <div>
-      <h3 style="margin-top:0">Kitchen-18: conditioning designs and data efficiency</h3>
-      <div class="tablewrap"><table>
-        <thead><tr><th>Method</th><th>Representation</th><th>100 demos</th><th>PnP</th><th>30 demos</th></tr></thead>
-        <tbody>
-          <tr><td>RGB</td><td>none</td><td>46.6 &plusmn; 3.4</td><td>46.0</td><td>40.8</td></tr>
-          <tr><td>Multi-view</td><td>second-view tokens</td><td>50.8 &plusmn; 5.2</td><td>69.0</td><td>43.1</td></tr>
-          <tr><td>RGB-D</td><td>disparity channel</td><td>50.8 &plusmn; 5.8</td><td>64.4</td><td>44.8</td></tr>
-          <tr><td>StereoVLA</td><td>pooled cost volume</td><td>51.1 &plusmn; 5.6</td><td>46.0</td><td>39.3</td></tr>
-          <tr><td>StereoPolicy</td><td>cross-view attention</td><td>47.8 &plusmn; 5.0</td><td>46.0</td><td>40.2</td></tr>
-          <tr class="ours"><td>StereoLift (ours)</td><td>belief embedding + relation tokens</td><td>60.3 &plusmn; 5.4</td><td>73.6</td><td>56.2</td></tr>
-        </tbody>
-      </table></div>
-      <p class="tabnote">Success rates (%) with 50 rollouts per task; task mean &plusmn; standard error over 18 tasks; PnP is the mean over the five pick-and-place tasks. All methods share the backbone, data, rectification and training configuration within each demonstration budget.</p>
-    </div>
-    <div>
-      <h3 style="margin-top:0">Ablations (30 demonstrations per task)</h3>
-      <div class="tablewrap"><table>
-        <thead><tr><th>Variant</th><th>Component assessed</th><th>Success</th><th>&Delta;</th></tr></thead>
-        <tbody>
-          <tr class="ours"><td>A: full model</td><td>&mdash;</td><td>56.2</td><td>0.0</td></tr>
-          <tr><td>B: without relation tokens</td><td>native-resolution reading</td><td>52.1</td><td>&minus;4.1</td></tr>
-          <tr><td>C: without geometric embedding</td><td>per-token spatial context</td><td>50.0</td><td>&minus;6.2</td></tr>
-          <tr><td>D: point estimate instead of belief</td><td>information beyond d_K</td><td>51.8</td><td>&minus;4.4</td></tr>
-        </tbody>
-      </table></div>
-      <h3>Latency per 50-step action chunk</h3>
-      <div class="tablewrap"><table>
-        <thead><tr><th></th><th>RGB</th><th>Multi-view</th><th>RGB-D</th><th>StereoVLA</th><th>StereoPolicy</th><th>StereoLift</th></tr></thead>
-        <tbody>
-          <tr><td>Latency (ms)</td><td>254.1</td><td>286.4</td><td>314.4</td><td>330.3</td><td>322.8</td><td><b>285.5</b></td></tr>
-          <tr><td>Overhead (ms)</td><td>&ndash;</td><td>32.3</td><td>60.3</td><td>76.2</td><td>68.7</td><td><b>31.4</b></td></tr>
-        </tbody>
-      </table></div>
-      <p class="tabnote">Median latency on an A800 GPU, batch size 1, 256&times;256 inputs, K = 4 refinement iterations, 10 flow-matching steps.</p>
-    </div>
-  </div>
+  <h3>Kitchen-18: conditioning designs and data efficiency</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Method</th><th>Conditioning representation</th><th>100 demos</th><th>PnP</th><th>30 demos</th></tr></thead>
+    <tbody>
+      <tr><td>RGB</td><td>None</td><td>46.6 &plusmn; 3.4</td><td>46.0</td><td>40.8</td></tr>
+      <tr><td>Multi-view</td><td>Second-view tokens</td><td>50.8 &plusmn; 5.2</td><td>69.0</td><td>43.1</td></tr>
+      <tr><td>RGB-D</td><td>Disparity channel</td><td>50.8 &plusmn; 5.8</td><td>64.4</td><td>44.8</td></tr>
+      <tr><td>RGBD-3DDA</td><td>3D diffusion features</td><td>50.6 &plusmn; 5.5</td><td>65.2</td><td>44.9</td></tr>
+      <tr><td>PCD-DP3</td><td>Point cloud (DP3)</td><td>49.8 &plusmn; 5.6</td><td>62.8</td><td>43.5</td></tr>
+      <tr><td>StereoVLA</td><td>Pooled cost volume</td><td>51.1 &plusmn; 5.6</td><td>58.4</td><td>39.3</td></tr>
+      <tr><td>StereoPolicy</td><td>Cross-view attention</td><td>47.8 &plusmn; 5.0</td><td>55.6</td><td>40.2</td></tr>
+      <tr class="ours"><td>StereoLift (ours)</td><td>Belief embedding + relation tokens</td><td>60.3 &plusmn; 5.4</td><td>73.6</td><td>56.2</td></tr>
+    </tbody>
+  </table></div>
+  <p class="tabnote">Success rates (%) with 50 rollouts per task; task mean &plusmn; standard error over 18 tasks; PnP is the mean over the five pick-and-place tasks. All methods share the backbone, data, rectification and training configuration within each demonstration budget.</p>
+  <h3>Ablations (30 demonstrations per task)</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>ID</th><th>Variant</th><th>Component assessed</th><th>Success</th><th>&Delta;</th></tr></thead>
+    <tbody>
+      <tr class="ours"><td>A</td><td>StereoLift (embedding + relation tokens + belief)</td><td>Full model</td><td>56.2</td><td>0.0</td></tr>
+      <tr><td>B</td><td>Without relation tokens</td><td>Native-resolution geometric reading</td><td>52.1</td><td>&minus;4.1</td></tr>
+      <tr><td>C</td><td>Without geometric token embedding</td><td>Per-token spatial context</td><td>50.0</td><td>&minus;6.2</td></tr>
+      <tr><td>D</td><td>Point estimate instead of belief (\([b;c]\to d_K\))</td><td>Information beyond the point estimate</td><td>51.8</td><td>&minus;4.4</td></tr>
+    </tbody>
+  </table></div>
+  <p class="tabnote">Ablations on Kitchen-18 with 30 demonstrations and 50 evaluation rollouts per task. Success is the task mean (%). &Delta; is the change in percentage points relative to the full model.</p>
+  <h3>Latency per 50-step action chunk</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th></th><th>RGB</th><th>Multi-view</th><th>RGB-D</th><th>StereoVLA</th><th>StereoPolicy</th><th>StereoLift</th></tr></thead>
+    <tbody>
+      <tr><td>Latency (ms)</td><td>254.1</td><td>286.4</td><td>314.4</td><td>330.3</td><td>322.8</td><td><b>285.5</b></td></tr>
+      <tr><td>Overhead (ms)</td><td>&ndash;</td><td>32.3</td><td>60.3</td><td>76.2</td><td>68.7</td><td><b>31.4</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="tabnote">Median latency on an A800 GPU, batch size 1, 256&times;256 inputs, K = 4 refinement iterations, 10 flow-matching steps.</p>
 
   <h3>Humanoid: successes out of 20 trials</h3>
   <div class="tablewrap"><table>
