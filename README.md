@@ -51,10 +51,10 @@ conditions a pretrained VLA on the disparity belief of a real-time zero-shot ste
 2. **language-conditioned relation tokens** read hand-object relations at native disparity precision.
 
 We prove that lifting preserves geometry up to a fixed linear map and show that belief conditioning never increases
-flow-matching risk relative to point estimates. Experiments on RoboCasa365 show that, under a unified backbone and
-training setup, StereoLift achieves the highest success rate among the compared stereo conditioning methods and raises
-that of the base VLA from 16.9% to 34.5%. Notably, on a humanoid with two dexterous hands, StereoLift raises average
-success from 33.3% to 81.7% while remaining robust to depth shifts.
+flow-matching risk relative to point estimates. On RoboCasa365, under a unified backbone and training setup,
+StereoLift achieves the highest success rate among the compared stereo conditioning methods and raises that of the
+base VLA from 16.9% to 34.5%. On a humanoid with two dexterous hands, StereoLift raises average success from 33.3% to
+81.7% while remaining robust to depth shifts.
 
 <div align="center">
 <img src='assets/teaser.png' width='100%'>
@@ -157,15 +157,17 @@ CHECKPOINT=outputs/kitchen18_100_stereolift/checkpoints/<step>/pretrained_model 
 The tables below are reproduced from the paper.
 
 **RoboCasa365 Target50.** Success rates (%) under the official protocol, with Human300 training and 50 rollouts per
-task. Except for the published pi0.5 result, all methods are trained in our codebase using the same recipe. The
-comparison designs (Multi-view, RGB-D, StereoVLA and StereoPolicy) are described in the paper and are not part of
-this release.
+task. All results are obtained with our shared experimental pipeline. The RGB baseline is our reproduction of pi0.5,
+consistent with the published result (16.9%). The comparison designs (Multi-view, RGB-D, RGBD-3DDA, PCD-DP3,
+StereoVLA and StereoPolicy) are described in the paper and are not part of this release.
 
 | Method | Atomic seen | Composite seen | Composite unseen | Overall |
 |---|:-:|:-:|:-:|:-:|
-| RGB (published pi0.5) | 39.6 | 7.1 | 1.2 | 16.9 |
+| RGB | 39.6 | 7.1 | 1.2 | 16.9 |
 | Multi-view | 56.4 | 24.4 | 9.4 | 31.1 |
 | RGB-D | 55.9 | 23.0 | 7.6 | 29.9 |
+| RGBD-3DDA | 56.6 | 24.4 | 8.6 | 30.9 |
+| PCD-DP3 | 54.0 | 23.9 | 7.6 | 29.5 |
 | StereoVLA | 50.3 | 28.1 | 7.2 | 29.4 |
 | StereoPolicy | 56.8 | 26.4 | 10.2 | 32.2 |
 | **StereoLift (ours)** | **60.3** | **29.4** | **10.6** | **34.5** |
@@ -177,21 +179,24 @@ configuration within each demonstration budget.
 
 | Method | Conditioning representation | 100 demos | PnP | 30 demos |
 |---|---|:-:|:-:|:-:|
-| RGB | none | 46.6 ± 3.4 | 46.0 | 40.8 |
-| Multi-view | second-view tokens | 50.8 ± 5.2 | 69.0 | 43.1 |
-| RGB-D | disparity channel | 50.8 ± 5.8 | 64.4 | 44.8 |
-| StereoVLA | pooled cost volume | 51.1 ± 5.6 | 46.0 | 39.3 |
-| StereoPolicy | cross-view attention | 47.8 ± 5.0 | 46.0 | 40.2 |
-| **StereoLift (ours)** | belief embedding + relation tokens | **60.3 ± 5.4** | **73.6** | **56.2** |
+| RGB | None | 46.6 ± 3.4 | 46.0 | 40.8 |
+| Multi-view | Second-view tokens | 50.8 ± 5.2 | 69.0 | 43.1 |
+| RGB-D | Disparity channel | 50.8 ± 5.8 | 64.4 | 44.8 |
+| RGBD-3DDA | 3D diffusion features | 50.6 ± 5.5 | 65.2 | 44.9 |
+| PCD-DP3 | Point cloud (DP3) | 49.8 ± 5.6 | 62.8 | 43.5 |
+| StereoVLA | Pooled cost volume | 51.1 ± 5.6 | 58.4 | 39.3 |
+| StereoPolicy | Cross-view attention | 47.8 ± 5.0 | 55.6 | 40.2 |
+| **StereoLift (ours)** | Belief embedding + relation tokens | **60.3 ± 5.4** | **73.6** | **56.2** |
 
-**Ablations** on Kitchen-18 with 30 demonstrations per task (success %, change in points relative to the full model).
+**Ablations** on Kitchen-18 with 30 demonstrations and 50 evaluation rollouts per task. Success is the task mean (%),
+Δ the change in percentage points relative to the full model.
 
 | ID | Variant | Component assessed | Success | Δ |
 |:-:|---|---|:-:|:-:|
-| A | StereoLift (embedding + relation tokens + belief) | full model | 56.2 | 0.0 |
-| B | without relation tokens | native-resolution geometric reading | 52.1 | −4.1 |
-| C | without geometric token embedding | per-token spatial context | 50.0 | −6.2 |
-| D | point estimate instead of belief ([b; c] → d_K) | information beyond the point estimate | 51.8 | −4.4 |
+| A | StereoLift (embedding + relation tokens + belief) | Full model | 56.2 | 0.0 |
+| B | Without relation tokens | Native-resolution geometric reading | 52.1 | −4.1 |
+| C | Without geometric token embedding | Per-token spatial context | 50.0 | −6.2 |
+| D | Point estimate instead of belief ([b; c] → d_K) | Information beyond the point estimate | 51.8 | −4.4 |
 
 **Humanoid with two dexterous hands.** Successful trials out of 20 per task and the average success rate (%) on the
 G1-D humanoid with two BrainCo dexterous hands. All policies are fine-tuned from pi0.5 using the same training
