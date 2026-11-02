@@ -206,3 +206,6 @@ footer a { color: var(--ink); }
 .speedbar .seg { display: inline-flex; border: 2.5px solid var(--ink); border-radius: 999px; overflow: hidden; background: var(--card); box-shadow: 3px 3px 0 var(--ink); }
 .speedbar .seg button { font-size: 0.86rem; padding: 4px 14px; }
 .speedbar .hint { font-family: var(--font-body); font-weight: 600; margin: 0; }
+
+/* Hugging Face links: the hugging-face emoji in a small white tile, in place of a line icon */
+.btn .hf { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; margin-left: -4px; border-radius: 6px; background: #ffffff; font-size: 0.95em; line-height: 1; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
