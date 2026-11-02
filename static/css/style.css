@@ -208,4 +208,4 @@ footer a { color: var(--ink); }
 .speedbar .hint { font-family: var(--font-body); font-weight: 600; margin: 0; }
 
 /* Hugging Face links: the hugging-face emoji in a small white tile, in place of a line icon */
-.btn .hf { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; margin-left: -4px; border-radius: 6px; background: #ffffff; font-size: 0.95em; line-height: 1; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+.btn .hf { flex: none; display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; margin-left: -4px; border-radius: 6px; background: #ffffff; font-size: 0.95em; line-height: 1; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
