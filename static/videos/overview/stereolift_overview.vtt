@@ -1,0 +1,148 @@
+WEBVTT
+
+00:00:00.600 --> 00:00:05.213
+Vision-language-action models inherit rich semantics from large-scale pretraining.
+
+00:00:06.263 --> 00:00:09.993
+But they capture limited metric geometry from monocular images,
+
+00:00:09.993 --> 00:00:13.071
+which hinders precise and contact-rich manipulation.
+
+00:00:14.121 --> 00:00:17.213
+How can a pretrained VLA use stereo geometry
+
+00:00:17.213 --> 00:00:20.375
+and its uncertainty for precise manipulation?
+
+00:00:22.425 --> 00:00:26.053
+We present StereoLift: enhancing vision-language-action
+
+00:00:26.053 --> 00:00:29.417
+models for precise manipulation via stereo lifting.
+
+00:00:30.817 --> 00:00:35.911
+StereoLift is one interface between a rectified stereo pair and a pretrained VLA.
+
+00:00:35.911 --> 00:00:40.063
+The stereo pair, a language instruction and the robot state go in.
+
+00:00:40.063 --> 00:00:42.138
+A 50-step action chunk comes out.
+
+00:00:43.338 --> 00:00:45.929
+First, a frozen stereo foundation model
+
+00:00:45.929 --> 00:00:49.052
+returns disparity together with its confidence.
+
+00:00:49.402 --> 00:00:54.885
+Second, a geometric token embedding lifts each visual token to 3D with assumed intrinsics
+
+00:00:54.885 --> 00:00:57.966
+and adds it through a zero-initialized projection.
+
+00:00:57.966 --> 00:01:00.492
+The policy receives no camera parameters.
+
+00:01:01.692 --> 00:01:05.716
+Third, 16 relation tokens, conditioned on language and robot state,
+
+00:01:05.716 --> 00:01:09.920
+read hand-object relations at the native resolution of the belief map.
+
+00:01:09.920 --> 00:01:12.562
+Cells with low confidence are down-weighted.
+
+00:01:13.762 --> 00:01:15.792
+The pretrained VLA stays as it is.
+
+00:01:15.792 --> 00:01:19.375
+PaliGemma and the flow-matching action expert are unchanged,
+
+00:01:19.375 --> 00:01:22.122
+and training uses only the flow-matching loss.
+
+00:01:23.122 --> 00:01:26.390
+We deploy StereoLift on a Unitree G1-D humanoid
+
+00:01:26.390 --> 00:01:29.727
+with two dexterous hands and evaluate six tasks.
+
+00:01:29.727 --> 00:01:34.525
+Every clip is a complete rollout of the deployed policy, at 6x speed.
+
+00:01:35.325 --> 00:01:36.223
+InsertRing.
+
+00:01:36.223 --> 00:01:41.777
+StereoLift succeeds in 16 of 20 trials, against 8 for monocular RGB.
+
+00:01:42.558 --> 00:01:45.157
+StackCup: three-cup stacking.
+
+00:01:45.157 --> 00:01:46.949
+15 of 20, against 9.
+
+00:01:53.558 --> 00:01:56.638
+RemoveCap: take the cap off a bottle.
+
+00:01:56.638 --> 00:01:58.302
+19 of 20, against 7.
+
+00:02:04.258 --> 00:02:06.689
+BuildBlocks, a bimanual assembly.
+
+00:02:06.689 --> 00:02:11.918
+Lift a base brick, insert three blocks into it, and place the assembly.
+
+00:02:11.918 --> 00:02:14.717
+StereoLift succeeds in 8 of 20 trials.
+
+00:02:14.717 --> 00:02:16.337
+Monocular RGB in none.
+
+00:02:17.325 --> 00:02:18.716
+HandoverBanana.
+
+00:02:18.716 --> 00:02:20.572
+20 of 20, against 9.
+
+00:02:22.525 --> 00:02:26.119
+DrawerItem, a long-horizon task with occlusion.
+
+00:02:26.119 --> 00:02:27.649
+20 of 20, against 7.
+
+00:02:29.992 --> 00:02:34.097
+StereoLift is the best method on all six tasks.
+
+00:02:34.097 --> 00:02:40.036
+Its average success is 81.7%, compared with 33.3% for monocular RGB.
+
+00:02:41.036 --> 00:02:47.028
+In simulation, under the official RoboCasa365 Target50 protocol,
+
+00:02:47.028 --> 00:02:53.955
+StereoLift raises the overall success of the base VLA from 16.9% to 34.5%.
+
+00:02:55.055 --> 00:02:58.720
+On RoboCasa365, on Kitchen-18 and on the humanoid,
+
+00:02:58.720 --> 00:03:03.630
+StereoLift achieves the highest success among the compared methods.
+
+00:03:03.980 --> 00:03:07.193
+It adds 31.4 ms per action chunk.
+
+00:03:07.543 --> 00:03:14.690
+Under target depth shifts of ±20 cm, it keeps 61.7% success on the humanoid.
+
+00:03:15.040 --> 00:03:19.006
+And with only 30 demonstrations per task on Kitchen-18,
+
+00:03:19.006 --> 00:03:22.467
+it still surpasses monocular RGB trained on 100.
+
+00:03:24.867 --> 00:03:30.070
+Code, the Kitchen-18 dataset and more results are available on our project page.
