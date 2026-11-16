@@ -1,18 +1,20 @@
 <div align="center">
 
-<h2 class="papername"> StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting </h2>
+<h2 class="papername"> Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting </h2>
 <div>
 <div>
-    Wenhao Li<sup>1,2</sup>,
-    Xusheng Liang<sup>2,3</sup>,
-    Yang Shi<sup>4</sup>,
+    Wenhao Li<sup>1</sup>,
+    Xusheng Liang<sup>2</sup>,
+    Yang Shi<sup>1</sup>,
     Zhongyi Han<sup>1</sup>,
+    Guangyuan Dong<sup>3</sup>,
     Zheyun Qin<sup>1</sup>,
-    Yilong Yin<sup>1*</sup>
+    Yilong Yin<sup>1</sup>
 </div>
 
-<sup>1</sup>School of Software, Shandong University &nbsp; <sup>2</sup>Shenzhen Loop Area Institute &nbsp; <sup>3</sup>City University of Hong Kong &nbsp; <sup>4</sup>School of Artificial Intelligence, Shandong University<br>
-*Corresponding author
+<sup>1</sup>Shandong University &nbsp;&middot;&nbsp; <sup>2</sup>City University of Hong Kong &nbsp;&middot;&nbsp; <sup>3</sup>National University of Singapore
+
+<img src='assets/affiliations.png' width='80%' alt='Shandong University, City University of Hong Kong, National University of Singapore'>
 
 [![project page](https://img.shields.io/badge/Project-StereoLift-9cf)](https://peacelwh.github.io/StereoLift/)
 [![dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Kitchen--18-yellow)](https://huggingface.co/datasets/Bluexxx/robocasa365_kitchen18)
@@ -36,8 +38,7 @@
 
 ## Introduction
 
-This is the official repository of *StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via
-Calibration-Free Stereo Lifting*.
+This is the official repository of *Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting*.
 
 Vision-language-action (VLA) models inherit rich semantics from large-scale pretraining but capture limited metric
 geometry from monocular images, which hinders precise and contact-rich manipulation. Existing approaches inject
@@ -240,8 +241,8 @@ If you find this work useful for your research, please kindly cite our paper.
 
 ```bibtex
 @misc{li2026stereolift,
-  title  = {StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting},
-  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Qin, Zheyun and Yin, Yilong},
+  title  = {Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting},
+  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Dong, Guangyuan and Qin, Zheyun and Yin, Yilong},
   year   = {2026},
   howpublished = {\url{https://github.com/peacelwh/StereoLift}}
 }

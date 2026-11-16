@@ -1,26 +1,29 @@
 cff-version: 1.2.0
 message: "If you find this work useful for your research, please cite our paper."
-title: "StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting"
+title: "Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting"
 type: software
 authors:
   - family-names: Li
     given-names: Wenhao
-    affiliation: "School of Software, Shandong University; Shenzhen Loop Area Institute"
+    affiliation: "Shandong University"
   - family-names: Liang
     given-names: Xusheng
-    affiliation: "Shenzhen Loop Area Institute; City University of Hong Kong"
+    affiliation: "City University of Hong Kong"
   - family-names: Shi
     given-names: Yang
-    affiliation: "School of Artificial Intelligence, Shandong University"
+    affiliation: "Shandong University"
   - family-names: Han
     given-names: Zhongyi
-    affiliation: "School of Software, Shandong University"
+    affiliation: "Shandong University"
+  - family-names: Dong
+    given-names: Guangyuan
+    affiliation: "National University of Singapore"
   - family-names: Qin
     given-names: Zheyun
-    affiliation: "School of Software, Shandong University"
+    affiliation: "Shandong University"
   - family-names: Yin
     given-names: Yilong
-    affiliation: "School of Software, Shandong University"
+    affiliation: "Shandong University"
 repository-code: "https://github.com/peacelwh/StereoLift"
 url: "https://peacelwh.github.io/StereoLift/"
 license: MIT
@@ -32,7 +35,7 @@ keywords:
   - dexterous manipulation
 preferred-citation:
   type: generic
-  title: "StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting"
+  title: "Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting"
   authors:
     - family-names: Li
       given-names: Wenhao
@@ -42,6 +45,8 @@ preferred-citation:
       given-names: Yang
     - family-names: Han
       given-names: Zhongyi
+    - family-names: Dong
+      given-names: Guangyuan
     - family-names: Qin
       given-names: Zheyun
     - family-names: Yin

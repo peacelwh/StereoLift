@@ -15,8 +15,8 @@ size_categories:
 
 # RoboCasa365 Kitchen-18 (stereo agentview pair)
 
-The **Kitchen-18** protocol of the paper *StereoLift: Enhancing Vision-Language-Action Models for Precise
-Manipulation via Calibration-Free Stereo Lifting*: the 18 atomic target tasks of the RoboCasa365 Target50 benchmark
+The **Kitchen-18** protocol of the paper *Enhancing Vision-Language-Action Models for Precise
+Manipulation via Stereo Lifting*: the 18 atomic target tasks of the RoboCasa365 Target50 benchmark
 with 100 human demonstrations per task, drawn from the RoboCasa365 Human300 pretraining set, in
 [LeRobot](https://github.com/huggingface/lerobot) v3 format with the head-mounted stereo pair
 `robot0_agentview_left` / `robot0_agentview_right` (256 × 256 pixels, 20 Hz).
@@ -87,8 +87,8 @@ non-commercial research. Please cite RoboCasa365 and, if you use this subset or 
 
 ```bibtex
 @misc{li2026stereolift,
-  title  = {StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting},
-  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Qin, Zheyun and Yin, Yilong},
+  title  = {Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting},
+  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Dong, Guangyuan and Qin, Zheyun and Yin, Yilong},
   year   = {2026},
   howpublished = {\url{https://github.com/peacelwh/StereoLift}}
 }
