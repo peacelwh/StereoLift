@@ -5,10 +5,10 @@ type: software
 authors:
   - family-names: Li
     given-names: Wenhao
-    affiliation: "Shandong University"
+    affiliation: "Shandong University; Shenzhen Loop Area Institute"
   - family-names: Liang
     given-names: Xusheng
-    affiliation: "City University of Hong Kong"
+    affiliation: "Shenzhen Loop Area Institute; City University of Hong Kong"
   - family-names: Han
     given-names: Zhongyi
     affiliation: "Shandong University"

@@ -3,18 +3,18 @@
 <h2 class="papername"> Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting </h2>
 <div>
 <div>
-    Wenhao Li<sup>1</sup>,
-    Xusheng Liang<sup>2</sup>,
+    Wenhao Li<sup>1,2</sup>,
+    Xusheng Liang<sup>2,3</sup>,
     Zhongyi Han<sup>1</sup>,
     Yang Shi<sup>1</sup>,
-    Guangyuan Dong<sup>3</sup>,
+    Guangyuan Dong<sup>4</sup>,
     Zheyun Qin<sup>1</sup>,
     Yilong Yin<sup>1</sup>
 </div>
 
-<sup>1</sup>Shandong University &nbsp;&middot;&nbsp; <sup>2</sup>City University of Hong Kong &nbsp;&middot;&nbsp; <sup>3</sup>National University of Singapore
+<sup>1</sup>Shandong University &nbsp;&middot;&nbsp; <sup>2</sup>Shenzhen Loop Area Institute &nbsp;&middot;&nbsp; <sup>3</sup>City University of Hong Kong &nbsp;&middot;&nbsp; <sup>4</sup>National University of Singapore
 
-<img src='assets/affiliations.png' width='80%' alt='Shandong University, City University of Hong Kong, National University of Singapore'>
+<img src='assets/affiliations.png' width='80%' alt='Shandong University, Shenzhen Loop Area Institute, City University of Hong Kong, National University of Singapore'>
 
 [![project page](https://img.shields.io/badge/Project-StereoLift-9cf)](https://peacelwh.github.io/StereoLift/)
 [![dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Kitchen--18-yellow)](https://huggingface.co/datasets/Bluexxx/robocasa365_kitchen18)
