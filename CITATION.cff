@@ -9,11 +9,11 @@ authors:
   - family-names: Liang
     given-names: Xusheng
     affiliation: "City University of Hong Kong"
-  - family-names: Shi
-    given-names: Yang
-    affiliation: "Shandong University"
   - family-names: Han
     given-names: Zhongyi
+    affiliation: "Shandong University"
+  - family-names: Shi
+    given-names: Yang
     affiliation: "Shandong University"
   - family-names: Dong
     given-names: Guangyuan
@@ -41,10 +41,10 @@ preferred-citation:
       given-names: Wenhao
     - family-names: Liang
       given-names: Xusheng
-    - family-names: Shi
-      given-names: Yang
     - family-names: Han
       given-names: Zhongyi
+    - family-names: Shi
+      given-names: Yang
     - family-names: Dong
       given-names: Guangyuan
     - family-names: Qin

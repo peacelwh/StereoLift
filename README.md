@@ -5,8 +5,8 @@
 <div>
     Wenhao Li<sup>1</sup>,
     Xusheng Liang<sup>2</sup>,
-    Yang Shi<sup>1</sup>,
     Zhongyi Han<sup>1</sup>,
+    Yang Shi<sup>1</sup>,
     Guangyuan Dong<sup>3</sup>,
     Zheyun Qin<sup>1</sup>,
     Yilong Yin<sup>1</sup>
@@ -242,7 +242,7 @@ If you find this work useful for your research, please kindly cite our paper.
 ```bibtex
 @misc{li2026stereolift,
   title  = {Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting},
-  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Dong, Guangyuan and Qin, Zheyun and Yin, Yilong},
+  author = {Li, Wenhao and Liang, Xusheng and Han, Zhongyi and Shi, Yang and Dong, Guangyuan and Qin, Zheyun and Yin, Yilong},
   year   = {2026},
   howpublished = {\url{https://github.com/peacelwh/StereoLift}}
 }
