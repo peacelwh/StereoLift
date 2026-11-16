@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>StereoLift</title>
-<meta name="description" content="StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting">
+<meta name="description" content="StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting">
 <meta property="og:title" content="StereoLift">
 <meta property="og:description" content="A calibration-free stereo interface for pretrained VLA models: geometric token embedding and relation tokens over the disparity belief of a frozen stereo foundation model.">
 <meta property="og:image" content="static/images/teaser.png">
@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800;900&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="static/css/style.css?v=20261103b">
+<link rel="stylesheet" href="static/css/style.css?v=20261116b">
 <link rel="icon" type="image/svg+xml" href="static/images/stereolift.svg?v=20261025f">
 </head>
 <body>
@@ -31,21 +31,25 @@
     <img src="static/videos/sim/atomic_seen/PickPlaceCounterToCabinet.jpg" alt=""><img src="static/videos/sim/composite_seen/PreSoakPan.jpg" alt=""><img src="static/videos/sim/atomic_seen/TurnOnSinkFaucet.jpg" alt=""><img src="static/videos/sim/composite_unseen/GarnishPancake.jpg" alt=""><img src="static/videos/sim/atomic_seen/OpenCabinet.jpg" alt=""><img src="static/videos/sim/composite_seen/StackBowlsCabinet.jpg" alt=""><img src="static/videos/sim/atomic_seen/OpenStandMixerHead.jpg" alt=""><img src="static/videos/sim/composite_unseen/WashFruitColander.jpg" alt="">
   </div>
   <h1><span class="stereo">Stereo</span><span class="lift">Lift</span></h1>
-  <p class="subtitle">Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting</p>
+  <p class="subtitle">Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting</p>
   <div class="authors">
-    <span>Wenhao Li<sup>1,2</sup></span>
-    <span>Xusheng Liang<sup>2,3</sup></span>
-    <span>Yang Shi<sup>4</sup></span>
+    <span>Wenhao Li<sup>1</sup></span>
+    <span>Xusheng Liang<sup>2</sup></span>
+    <span>Yang Shi<sup>1</sup></span>
     <span>Zhongyi Han<sup>1</sup></span>
+    <span>Guangyuan Dong<sup>3</sup></span>
     <span>Zheyun Qin<sup>1</sup></span>
-    <span>Yilong Yin<sup>1,&#8224;</sup></span>
+    <span>Yilong Yin<sup>1</sup></span>
   </div>
   <div class="affil">
-    <span><sup>1</sup>School of Software, Shandong University</span>
-    <span><sup>2</sup>Shenzhen Loop Area Institute</span>
-    <span><sup>3</sup>City University of Hong Kong</span>
-    <span><sup>4</sup>School of Artificial Intelligence, Shandong University</span>
-    <span><sup>&#8224;</sup>Corresponding author</span>
+    <span><sup>1</sup>Shandong University</span>
+    <span><sup>2</sup>City University of Hong Kong</span>
+    <span><sup>3</sup>National University of Singapore</span>
+  </div>
+  <div class="affil-logos">
+    <a href="https://www.sdu.edu.cn/" target="_blank" rel="noopener"><img src="static/images/logos/sdu.png" alt="Shandong University"></a>
+    <a href="https://www.cityu.edu.hk/" target="_blank" rel="noopener"><img src="static/images/logos/cityu.png" alt="City University of Hong Kong"></a>
+    <a href="https://www.nus.edu.sg/" target="_blank" rel="noopener"><img src="static/images/logos/nus.png" alt="National University of Singapore"></a>
   </div>
   <div class="links">
     <span class="btn disabled" title="The paper is under review; the link will be added on publication."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>Paper (coming soon)</span>
@@ -288,8 +292,8 @@
 <section id="citation">
   <h2><span class="num">06</span>Citation</h2>
   <pre class="bib" id="bibtex"><button class="copy" id="copy-bib" type="button">Copy</button>@misc{li2026stereolift,
-  title  = {StereoLift: Enhancing Vision-Language-Action Models for Precise Manipulation via Calibration-Free Stereo Lifting},
-  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Qin, Zheyun and Yin, Yilong},
+  title  = {Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting},
+  author = {Li, Wenhao and Liang, Xusheng and Shi, Yang and Han, Zhongyi and Dong, Guangyuan and Qin, Zheyun and Yin, Yilong},
   year   = {2026},
   howpublished = {\url{https://github.com/peacelwh/StereoLift}}
 }</pre>
