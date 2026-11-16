@@ -94,6 +94,7 @@ a { color: var(--teal-deep); }
 .sheet-bar .note { font-size: 0.86rem; font-weight: 800; color: var(--teal-deep); background: var(--teal-soft); border-radius: 999px; padding: 1px 12px; }
 .sheet-bar .note.coral { color: var(--coral); background: var(--coral-soft); }
 .sheet-bar .spacer { flex: 1; }
+.film video { width: 100%; aspect-ratio: 16 / 9; background: #141a22; }
 .sheet-body {
   padding: 18px;
   background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);

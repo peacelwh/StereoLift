@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800;900&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="static/css/style.css?v=20261116b">
+<link rel="stylesheet" href="static/css/style.css?v=20261116c">
 <link rel="icon" type="image/svg+xml" href="static/images/stereolift.svg?v=20261025f">
 </head>
 <body>
@@ -20,7 +20,7 @@
 <div class="topbar"><div class="wrap">
   <a class="brand" href="#top"><img class="brand-mark" src="static/images/stereolift.svg?v=20261025f" alt="" width="28" height="28">StereoLift</a>
   <nav class="topnav">
-    <a href="#abstract">Abstract</a><a href="#method">Method</a><a href="#real">Humanoid</a><a href="#sim">RoboCasa365</a><a href="#results">Results</a><a href="#citation">BibTeX</a>
+    <a href="#video">Video</a><a href="#abstract">Abstract</a><a href="#method">Method</a><a href="#real">Humanoid</a><a href="#sim">RoboCasa365</a><a href="#results">Results</a><a href="#citation">BibTeX</a>
   </nav>
 </div></div>
 
@@ -55,6 +55,7 @@
     <span class="btn disabled" title="The paper is under review; the link will be added on publication."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>Paper (coming soon)</span>
     <a class="btn" href="https://github.com/peacelwh/StereoLift" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A12 12 0 0 0 0 12.6a12.1 12.1 0 0 0 8.2 11.5c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.3 1.8 1.3 1.1 1.9 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.4-5.5-6a4.7 4.7 0 0 1 1.2-3.3 4.4 4.4 0 0 1 .1-3.2s1-.3 3.3 1.2a11.3 11.3 0 0 1 6 0c2.3-1.6 3.3-1.2 3.3-1.2a4.4 4.4 0 0 1 .1 3.2 4.7 4.7 0 0 1 1.2 3.3c0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12.1 12.1 0 0 0 24 12.6 12 12 0 0 0 12 .5z"/></svg>Code</a>
     <a class="btn" href="https://huggingface.co/datasets/Bluexxx/robocasa365_kitchen18" target="_blank" rel="noopener"><span class="hf" aria-hidden="true">&#x1F917;</span>Kitchen-18 Dataset</a>
+    <a class="btn" href="#video"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6a.9.9 0 0 0 1.4.8l10.4-6.8a.9.9 0 0 0 0-1.6L9.4 4.4A.9.9 0 0 0 8 5.2z"/></svg>Video</a>
     <a class="btn" href="#citation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 17h3l2-4V7H5v6h3zM14 17h3l2-4V7h-6v6h3z"/></svg>BibTeX</a>
   </div>
 
@@ -91,8 +92,23 @@
 
 <main class="wrap">
 
+<section id="video">
+  <h2><span class="num">01</span>Video</h2>
+  <div class="sheet film">
+    <div class="sheet-bar">
+      <span class="cut">Overview</span>
+      <span class="title">StereoLift in two minutes</span>
+      <span class="spacer"></span>
+      <span class="note">2:12, no audio</span>
+      <span class="note coral">all six humanoid rollouts</span>
+    </div>
+    <video controls playsinline preload="metadata" poster="static/videos/overview/stereolift_overview.jpg?v=20261116c" src="static/videos/overview/stereolift_overview.mp4?v=20261116c"></video>
+  </div>
+  <p class="tabnote">The motivation, the StereoLift interface, a complete rollout of the deployed StereoLift policy on each of the six humanoid tasks (6&times; speed, with the successes out of 20 trials of every method), RoboCasa365 rollouts, and the main results.</p>
+</section>
+
 <section id="abstract">
-  <h2><span class="num">01</span>Abstract</h2>
+  <h2><span class="num">02</span>Abstract</h2>
   <div class="box"><p class="lead" style="margin:0">Vision-language-action (VLA) models inherit rich semantics from large-scale pretraining but capture limited metric geometry from monocular images, hindering precise and contact-rich manipulation. Existing approaches inject geometry through depth maps, point clouds, or auxiliary 3D objectives, but typically require camera calibration, discard depth uncertainty, or modify the pretrained backbone. To address these limitations, we propose <b>StereoLift</b>, a calibration-free framework that conditions a pretrained VLA on the disparity belief of a real-time zero-shot stereo foundation model. First, a <b>geometric token embedding</b> lifts each visual token into an affine-equivalent 3D frame using assumed intrinsics. A single zero-initialized projection injects the lifted coordinate and belief into the token. Second, language-conditioned <b>relation tokens</b> read hand-object relations at native disparity precision. We prove that lifting preserves geometry up to a fixed linear map and show that belief conditioning never increases flow-matching risk relative to point estimates. On RoboCasa365, under a unified backbone and training setup, StereoLift achieves the highest success rate among the compared stereo conditioning methods and raises that of the base VLA from 16.9% to 34.5%. On a humanoid with two dexterous hands, StereoLift raises average success from 33.3% to 81.7% while remaining robust to depth shifts.</p></div>
   <figure class="figure" style="margin:22px 0 0">
     <img src="static/images/teaser.png" alt="Overview of StereoLift: existing geometry conditioning, the StereoLift interface, and the performance comparisons">
@@ -101,7 +117,7 @@
 </section>
 
 <section id="method">
-  <h2><span class="num">02</span>Method</h2>
+  <h2><span class="num">03</span>Method</h2>
   <p class="lead">At each control step the policy receives a rectified stereo pair, a language instruction and the proprioceptive state, and predicts a 50-step action chunk. StereoLift builds on pi0.5 and introduces two components between its visual encoder and its vision-language backbone. The backbone, the action parameterization and the flow-matching objective are preserved; no auxiliary geometric supervision, depth labels or camera-parameter targets are used.</p>
   <figure class="figure" style="margin-top:18px">
     <img src="static/images/architecture.png" alt="Overall framework of StereoLift">
@@ -132,7 +148,7 @@
 </section>
 
 <section id="real">
-  <h2><span class="num">03</span>StereoLift on a humanoid with two dexterous hands</h2>
+  <h2><span class="num">04</span>StereoLift on a humanoid with two dexterous hands</h2>
   <p class="lead">Six tasks on a Unitree G1-D humanoid with two BrainCo 6-DoF hands (26-dimensional actions): precise alignment, three-cup stacking, cap removal, bimanual assembly and handover, and long-horizon manipulation with occlusion. The head-mounted 640&times;480 stereo pair is used without calibration; the only correction is a constant vertical offset of &minus;4.15 pixels estimated from the data. Each policy is trained from 100 demonstrations and evaluated over 20 trials per task. Every clip below is a rollout of the deployed StereoLift policy on the robot; the counts next to each task are the successes out of 20 for StereoLift and for the monocular pi0.5 baseline trained with the same configuration.</p>
   <div class="speedbar">
     <span>Playback speed</span>
@@ -174,7 +190,7 @@
 </section>
 
 <section id="sim">
-  <h2><span class="num">04</span>RoboCasa365 rollouts</h2>
+  <h2><span class="num">05</span>RoboCasa365 rollouts</h2>
   <p class="lead">Successful StereoLift rollouts under the official Target50 protocol (trained on the 300-task Human300 set, evaluated on 50 target tasks in three groups), seen from the left agentview camera. Click a clip to pause it.</p>
   <div data-tabs class="sheet">
     <div class="tabs" role="tablist">
@@ -216,7 +232,7 @@
 </section>
 
 <section id="results">
-  <h2><span class="num">05</span>Results</h2>
+  <h2><span class="num">06</span>Results</h2>
   <h3>RoboCasa365 Target50 (official protocol)</h3>
   <div class="tablewrap"><table>
     <thead><tr><th>Method</th><th>Atomic seen</th><th>Composite seen</th><th>Composite unseen</th><th>Overall</th></tr></thead>
@@ -290,7 +306,7 @@
 </section>
 
 <section id="citation">
-  <h2><span class="num">06</span>Citation</h2>
+  <h2><span class="num">07</span>Citation</h2>
   <pre class="bib" id="bibtex"><button class="copy" id="copy-bib" type="button">Copy</button>@misc{li2026stereolift,
   title  = {Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting},
   author = {Li, Wenhao and Liang, Xusheng and Han, Zhongyi and Shi, Yang and Dong, Guangyuan and Qin, Zheyun and Yin, Yilong},
