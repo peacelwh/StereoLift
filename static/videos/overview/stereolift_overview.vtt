@@ -1,148 +1,148 @@
 WEBVTT
 
-00:00:00.600 --> 00:00:05.213
+00:00:00.600 --> 00:00:04.754
 Vision-language-action models inherit rich semantics from large-scale pretraining.
 
-00:00:06.263 --> 00:00:09.993
+00:00:05.804 --> 00:00:09.210
 But they capture limited metric geometry from monocular images,
 
-00:00:09.993 --> 00:00:13.071
+00:00:09.210 --> 00:00:12.022
 which hinders precise and contact-rich manipulation.
 
-00:00:14.121 --> 00:00:17.213
+00:00:13.072 --> 00:00:15.850
 How can a pretrained VLA use stereo geometry
 
-00:00:17.213 --> 00:00:20.375
+00:00:15.850 --> 00:00:18.692
 and its uncertainty for precise manipulation?
 
-00:00:22.425 --> 00:00:26.053
+00:00:20.742 --> 00:00:23.948
 We present StereoLift: enhancing vision-language-action
 
-00:00:26.053 --> 00:00:29.417
+00:00:23.948 --> 00:00:26.920
 models for precise manipulation via stereo lifting.
 
-00:00:30.817 --> 00:00:35.911
+00:00:28.320 --> 00:00:33.309
 StereoLift is one interface between a rectified stereo pair and a pretrained VLA.
 
-00:00:35.911 --> 00:00:40.063
+00:00:33.309 --> 00:00:37.374
 The stereo pair, a language instruction and the robot state go in.
 
-00:00:40.063 --> 00:00:42.138
+00:00:37.374 --> 00:00:39.407
 A 50-step action chunk comes out.
 
-00:00:43.338 --> 00:00:45.929
+00:00:40.607 --> 00:00:42.878
 First, a frozen stereo foundation model
 
-00:00:45.929 --> 00:00:49.052
+00:00:42.878 --> 00:00:45.615
 returns disparity together with its confidence.
 
-00:00:49.402 --> 00:00:54.885
+00:00:45.965 --> 00:00:51.239
 Second, a geometric token embedding lifts each visual token to 3D with assumed intrinsics
 
-00:00:54.885 --> 00:00:57.966
+00:00:51.239 --> 00:00:54.202
 and adds it through a zero-initialized projection.
 
-00:00:57.966 --> 00:01:00.492
+00:00:54.202 --> 00:00:56.632
 The policy receives no camera parameters.
 
-00:01:01.692 --> 00:01:05.716
+00:00:57.832 --> 00:01:01.829
 Third, 16 relation tokens, conditioned on language and robot state,
 
-00:01:05.716 --> 00:01:09.920
+00:01:01.829 --> 00:01:06.005
 read hand-object relations at the native resolution of the belief map.
 
-00:01:09.920 --> 00:01:12.562
+00:01:06.005 --> 00:01:08.630
 Cells with low confidence are down-weighted.
 
-00:01:13.762 --> 00:01:15.792
+00:01:09.830 --> 00:01:11.817
 The pretrained VLA stays as it is.
 
-00:01:15.792 --> 00:01:19.375
+00:01:11.817 --> 00:01:15.324
 PaliGemma and the flow-matching action expert are unchanged,
 
-00:01:19.375 --> 00:01:22.122
+00:01:15.324 --> 00:01:18.012
 and training uses only the flow-matching loss.
 
-00:01:23.122 --> 00:01:26.390
+00:01:19.012 --> 00:01:22.120
 We deploy StereoLift on a Unitree G1-D humanoid
 
-00:01:26.390 --> 00:01:29.727
+00:01:22.120 --> 00:01:25.294
 with two dexterous hands and evaluate six tasks.
 
-00:01:29.727 --> 00:01:34.525
+00:01:25.294 --> 00:01:29.856
 Every clip is a complete rollout of the deployed policy, at 6x speed.
 
-00:01:35.325 --> 00:01:36.223
+00:01:30.656 --> 00:01:31.533
 InsertRing.
 
-00:01:36.223 --> 00:01:41.777
+00:01:31.533 --> 00:01:36.951
 StereoLift succeeds in 16 of 20 trials, against 8 for monocular RGB.
 
-00:01:42.558 --> 00:01:45.157
+00:01:37.890 --> 00:01:40.142
 StackCup: three-cup stacking.
 
-00:01:45.157 --> 00:01:46.949
+00:01:40.142 --> 00:01:41.696
 15 of 20, against 9.
 
-00:01:53.558 --> 00:01:56.638
+00:01:48.890 --> 00:01:51.773
 RemoveCap: take the cap off a bottle.
 
-00:01:56.638 --> 00:01:58.302
+00:01:51.773 --> 00:01:53.332
 19 of 20, against 7.
 
-00:02:04.258 --> 00:02:06.689
+00:01:59.590 --> 00:02:01.929
 BuildBlocks, a bimanual assembly.
 
-00:02:06.689 --> 00:02:11.918
+00:02:01.929 --> 00:02:06.961
 Lift a base brick, insert three blocks into it, and place the assembly.
 
-00:02:11.918 --> 00:02:14.717
+00:02:06.961 --> 00:02:09.654
 StereoLift succeeds in 8 of 20 trials.
 
-00:02:14.717 --> 00:02:16.337
+00:02:09.654 --> 00:02:11.213
 Monocular RGB in none.
 
-00:02:17.325 --> 00:02:18.716
+00:02:12.656 --> 00:02:13.877
 HandoverBanana.
 
-00:02:18.716 --> 00:02:20.572
+00:02:13.877 --> 00:02:15.505
 20 of 20, against 9.
 
-00:02:22.525 --> 00:02:26.119
+00:02:17.856 --> 00:02:21.243
 DrawerItem, a long-horizon task with occlusion.
 
-00:02:26.119 --> 00:02:27.649
+00:02:21.243 --> 00:02:22.684
 20 of 20, against 7.
 
-00:02:29.992 --> 00:02:34.097
+00:02:25.323 --> 00:02:29.406
 StereoLift is the best method on all six tasks.
 
-00:02:34.097 --> 00:02:40.036
+00:02:29.406 --> 00:02:35.312
 Its average success is 81.7%, compared with 33.3% for monocular RGB.
 
-00:02:41.036 --> 00:02:47.028
+00:02:36.312 --> 00:02:41.947
 In simulation, under the official RoboCasa365 Target50 protocol,
 
-00:02:47.028 --> 00:02:53.955
+00:02:41.947 --> 00:02:48.461
 StereoLift raises the overall success of the base VLA from 16.9% to 34.5%.
 
-00:02:55.055 --> 00:02:58.720
+00:02:49.561 --> 00:02:52.946
 On RoboCasa365, on Kitchen-18 and on the humanoid,
 
-00:02:58.720 --> 00:03:03.630
+00:02:52.946 --> 00:02:57.483
 StereoLift achieves the highest success among the compared methods.
 
-00:03:03.980 --> 00:03:07.193
+00:02:57.833 --> 00:03:00.862
 It adds 31.4 ms per action chunk.
 
-00:03:07.543 --> 00:03:14.690
+00:03:01.212 --> 00:03:08.226
 Under target depth shifts of ±20 cm, it keeps 61.7% success on the humanoid.
 
-00:03:15.040 --> 00:03:19.006
+00:03:08.576 --> 00:03:12.213
 And with only 30 demonstrations per task on Kitchen-18,
 
-00:03:19.006 --> 00:03:22.467
+00:03:12.213 --> 00:03:15.387
 it still surpasses monocular RGB trained on 100.
 
-00:03:24.867 --> 00:03:30.070
+00:03:17.787 --> 00:03:22.696
 Code, the Kitchen-18 dataset and more results are available on our project page.
