@@ -6,24 +6,21 @@ authors:
   - family-names: Li
     given-names: Wenhao
     affiliation: "Shandong University; Shenzhen Loop Area Institute"
-  - family-names: Liang
-    given-names: Xusheng
-    affiliation: "Shenzhen Loop Area Institute; City University of Hong Kong"
   - family-names: Han
-    given-names: Zhongyi
-    affiliation: "Shandong University"
+    given-names: Liang
+    affiliation: "Harbin Institute of Technology (Shenzhen)"
   - family-names: Shi
     given-names: Yang
     affiliation: "Shandong University"
-  - family-names: Dong
-    given-names: Guangyuan
-    affiliation: "National University of Singapore"
-  - family-names: Qin
-    given-names: Zheyun
+  - family-names: Han
+    given-names: Zhongyi
     affiliation: "Shandong University"
   - family-names: Yin
     given-names: Yilong
     affiliation: "Shandong University"
+  - family-names: Nie
+    given-names: Liqiang
+    affiliation: "Harbin Institute of Technology (Shenzhen)"
 repository-code: "https://github.com/peacelwh/StereoLift"
 url: "https://peacelwh.github.io/StereoLift/"
 license: MIT
@@ -39,17 +36,15 @@ preferred-citation:
   authors:
     - family-names: Li
       given-names: Wenhao
-    - family-names: Liang
-      given-names: Xusheng
     - family-names: Han
-      given-names: Zhongyi
+      given-names: Liang
     - family-names: Shi
       given-names: Yang
-    - family-names: Dong
-      given-names: Guangyuan
-    - family-names: Qin
-      given-names: Zheyun
+    - family-names: Han
+      given-names: Zhongyi
     - family-names: Yin
       given-names: Yilong
+    - family-names: Nie
+      given-names: Liqiang
   year: 2026
   url: "https://github.com/peacelwh/StereoLift"

@@ -4,17 +4,16 @@
 <div>
 <div>
     Wenhao Li<sup>1,2</sup>,
-    Xusheng Liang<sup>2,3</sup>,
-    Zhongyi Han<sup>1</sup>,
+    Liang Han<sup>3</sup>,
     Yang Shi<sup>1</sup>,
-    Guangyuan Dong<sup>4</sup>,
-    Zheyun Qin<sup>1</sup>,
-    Yilong Yin<sup>1</sup>
+    Zhongyi Han<sup>1</sup>,
+    Yilong Yin<sup>1</sup>,
+    Liqiang Nie<sup>3</sup>
 </div>
 
-<sup>1</sup>Shandong University &nbsp;&middot;&nbsp; <sup>2</sup>Shenzhen Loop Area Institute &nbsp;&middot;&nbsp; <sup>3</sup>City University of Hong Kong &nbsp;&middot;&nbsp; <sup>4</sup>National University of Singapore
+<sup>1</sup>Shandong University &nbsp;&middot;&nbsp; <sup>2</sup>Shenzhen Loop Area Institute &nbsp;&middot;&nbsp; <sup>3</sup>Harbin Institute of Technology (Shenzhen)
 
-<img src='assets/affiliations.png' width='80%' alt='Shandong University, Shenzhen Loop Area Institute, City University of Hong Kong, National University of Singapore'>
+<img src='assets/affiliations.png' width='80%' alt='Shandong University, Shenzhen Loop Area Institute, Harbin Institute of Technology (Shenzhen)'>
 
 [![project page](https://img.shields.io/badge/Project-StereoLift-9cf)](https://peacelwh.github.io/StereoLift/)
 [![dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Kitchen--18-yellow)](https://huggingface.co/datasets/Bluexxx/robocasa365_kitchen18)
@@ -242,7 +241,7 @@ If you find this work useful for your research, please kindly cite our paper.
 ```bibtex
 @misc{li2026stereolift,
   title  = {Enhancing Vision-Language-Action Models for Precise Manipulation via Stereo Lifting},
-  author = {Li, Wenhao and Liang, Xusheng and Han, Zhongyi and Shi, Yang and Dong, Guangyuan and Qin, Zheyun and Yin, Yilong},
+  author = {Li, Wenhao and Han, Liang and Shi, Yang and Han, Zhongyi and Yin, Yilong and Nie, Liqiang},
   year   = {2026},
   howpublished = {\url{https://github.com/peacelwh/StereoLift}}
 }
